@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    html {
+        height: 100%;
+    } 
+    body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100%;
+        
+    }
+    .main {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        flex: 1 0 auto;
+    }
+    .box {
+        background-color: var(--background2);
+        border-radius: var(--roundness);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        padding-top: 0;
+     }
+    
+    form {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        
+    }
+    .input {
+        border-radius: var(--roundness);
+        width: 16rem;
+        padding: 1rem;
+        margin-top: 0.3rem;
+        margin-bottom: 0.3rem;
+        text-align: center;
+        font-size: 14px;
+    }
+    
+    .button {
+        width: 100%;
+        padding: 1rem;
+        margin-top: 0.5rem;
+        font-size: medium;
+        border: 0;
+        border-radius: var(--roundness);
+        background-color: var(--accent2_transp);
+    }
+    
+    
+    .copyright_div {
+        flex: 0 0 auto;
+    }
+</style>
+
+<div class="main">
+    
+    <div class="box">
+        
+            <h1 class="title">Смена скина</h1>
+            <form method="post" enctype=multipart/form-data action="/skin">
+                <div class="login">
+                    {% if error%}
+                    <p class="message msg_error">{{error}}</p>
+                    {% endif%}
+                    {% if message%}
+                    <p class="message msg_success">{{message}}</p>
+                    {% endif%}
+                    <div class="field">
+                        <div class="control">
+                            <input class="input" type="text" name="username" placeholder="Ник" value="{{request.form.username }}">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="control">
+                            <input class="input" type="password" name="password" placeholder="Пароль">
+                        </div>
+                    </div>
+                    <button class="button">Загрузить</button>
+                </div>
+                <div class="skinfile">
+                    <div class="field">
+                        <input class="input" type="file" name="file" placeholder="Файл скина">
+                    </div>
+                </div>
+            
+            
+
+        </form>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+        html {
+            height: 100%;
+        } 
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+            
+        }
+        .main {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            flex: 1 0 auto;
+        }
+        .box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        img {
+            height: auto;
+            width:650px;
+            padding: 3rem;
+        }
+        .backButton {
+            text-decoration: none; 
+            text-align: center;
+            padding: 0;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            border-radius: var(--roundness);
+            background-color: var(--accent2_transp);
+            display: block;
+            width: 50%;
+            color: white;
+            text-decoration: none; 
+        }
+</style>
+<div class="main">
+    <div class="box">
+        <img src="/static/pageNotFound.png" alt="Page Not Found 404">
+
+        <a href="/" class="backButton">На главную</a>
+    </div>
+</div>
+{% endblock %}
