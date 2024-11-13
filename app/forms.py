@@ -3,7 +3,7 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField, FileF
 from wtforms.validators import ValidationError, DataRequired, EqualTo, Regexp
 from flask_wtf.file import FileRequired, FileAllowed
 import sqlalchemy as sa
-from app import db, skinfile
+from app import db
 from app.models import User
 
 class LoginForm(FlaskForm):

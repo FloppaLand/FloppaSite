@@ -6,7 +6,7 @@ import os
 from PIL import Image, ImageEnhance
 from urllib.parse import urlsplit
 from base64 import b64encode
-from app import app, db, skinfile
+from app import app, db
 from app.forms import LoginForm, RegistrationForm, SetSkinForm, ChangePasswordForm
 from app.models import User
 
@@ -53,9 +53,8 @@ def register():
     return render_template('register.html', title='Register', form=form)
 
 def get_skin_patch(filename):
-   base_patch = os.path.join(os.getcwd(), app.config['UPLOADED_PHOTOS_DEST'])
+   base_patch = os.path.join(os.getcwd(), app.config['UPLOADED_SKINS_DIR'])
    path = os.path.join(base_patch, filename + ("" if os.path.splitext(filename)[1] else ".png"))
-   print(path)
    if os.path.exists(path):
     return path
    else:
@@ -85,12 +84,10 @@ def profile():
     change_password_form = ChangePasswordForm()
     formid = request.args.get('formid', 1, type=int)
     if set_skin_form.validate_on_submit() and formid == 1:
-      print(set_skin_form.skinfile.data)
-      print(current_user.username)
-      set_skin_form.skinfile.data.save(os.path.join(os.getcwd(), "data/skins", current_user.username+".png"))
+      set_skin_form.skinfile.data.save(get_skin_patch(current_user.username))
       flash("Скин успешно установлен!", category="success_skin")
+      
     if change_password_form.submit2.data and change_password_form.validate_on_submit() and formid == 2:
-      print(change_password_form.password.data)
       current_user.set_password(change_password_form.password.data)
       db.session.commit()
       flash("Пароль изменён!", category="success_pass")
