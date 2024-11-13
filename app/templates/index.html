@@ -1,16 +1,14 @@
 {% extends "base.html" %}
-{# переопределяем блок `title` базового шаблона #}
-{# переопределяем блок `content` базового шаблона #}
 {% block content %}
 
     <div class="mainflex">
       <div class="main1">
         <a class="main1_logo_a" href="#">
-          <img class="main1_logo" src="/static/FloppaLandLogo.png" alt="logo">
+          <img class="main1_logo" src="{{ url_for('static', filename='logo/FloppaLandLogo.png') }}" alt="logo">
         </a>
         <div class="main1_description">
           <a>Самый разнообразный <br></a>
-          <a class="main1_actcent">технический сервер</a><a>.</a>
+          <a><a class="main1_actcent">технический</a> и <a class="main1_actcent2">магический</a> Minecraft сервер.</a>
         </div>
         <div class="main1_download_div">
           <a class="main1_download" href="http://launcher.floppaland.fun/FloppaLauncher.exe" >
@@ -24,7 +22,7 @@
           </a>
         </div>
         <a href="#more" class="scroll">
-          <img alt="downarrow" class="main1_downarrow" src="/static/downarrow.png">
+          <img alt="downarrow" class="main1_downarrow" src="{{ url_for('static', filename='images/downarrow.png') }}">
         </a>
         <script>
           const scrollLinks = document.querySelectorAll('.scroll');
@@ -114,9 +112,9 @@
           </div>
         </div>
       </div>
-      <div id="about"></div>
+      <div id="other_games"></div>
       <div class="main5">
-        <a class="headline">Комьюнити</a>
+        <a class="headline">Другие игры</a>
         <div class="main5_admin_div">
           <div class="main5_admins_div main5_admins_dev_type2">
             <img class="main5_admins_img" alt="admin member img" src="/static/zizazr.png">

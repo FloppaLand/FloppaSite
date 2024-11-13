@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% from "macros.html" import success_macro, error_macro %}
+{% block content %}
+<style>
+  :root {
+  --color-accent: #19ff70;
+  --color-text_darker: #a0a0a0;
+  --color-text: #cccccc;
+  
+}
+  html {
+      height: 100%;
+  } 
+  body {
+      display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    
+          }
+  .main {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      flex: 1 0 auto;
+  }
+  .box {
+      background-color: var(--background2);
+      border-radius: var(--roundness);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      padding-top: 0;
+   }
+  
+  form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+  }
+  .lns-checkbox {
+  display: inline-flex;
+  color: var(--color-text);
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  align-items: center;
+  user-select: none;
+
+  @media (min-width: 992px) {
+    font-size: 1rem;
+  }
+
+  span {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  input[type="checkbox"] {
+    position: absolute;
+    clip: rect(1px, 1px, 1px, 1px);
+
+    padding: 0;
+    border: 0;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+
+    &:checked + span::after {
+      background-color: var(--color-accent);
+    }
+
+    &:checked + span {
+      color: var(--color-accent);
+    }
+  }
+
+  span::before {
+    content: "";
+    display: inline-block;
+    border-radius: 3px;
+    background-color: #414051;
+    margin-right: 8px;
+    height: 16px;
+    width: 16px;
+    border: 1px solid transparent;
+  }
+
+  span::after {
+    content: "";
+    display: inline-block;
+    height: 12px;
+    width: 12px;
+    border-radius: 3px;
+    background-color: transparent;
+    left: 3px;
+    position: absolute;
+  }
+}
+  
+  .copyright_div {
+      flex: 0 0 auto;
+  }
+  </style>
+  <div class="main">
+    <div class="box">
+      <h1 class="title">Вход</h1>
+      {{ success_macro(message) }}
+      <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p class="input_box">
+          {{ form.username(class="input", placeholder="Никнейм") }}<br>
+          {{ error_macro(form.username.errors) }}
+        </p>
+        <p class="input_box">
+          {{ form.password(class="input", placeholder="Ваш пароль") }}<br>
+          {{ error_macro(form.password.errors) }}
+        </p>
+        <label class="lns-checkbox ml-2">
+          {{ form.remember_me(class="lns-checkbox") }}
+          <span>{{ form.remember_me.label }}</span>
+        </label>
+        <p>{{ form.submit(class="button_submit") }}</p>
+      </form>
+      <p style="color: var(--color-text_darker);">Ещё нет аккаунта? <a style="color: var(--accent2); text-decoration: none;" href="{{ url_for('register') }}">Нажмите для регистрации</a></p>
+    </div>
+  </div>
+{% endblock %}

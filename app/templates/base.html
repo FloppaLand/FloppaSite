@@ -5,8 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Floppaland</title>
-    <link rel="icon" type="image/png" href="/static/FloppaLand_mini_logo.png">
-    <link rel="stylesheet" href="/static/main.css">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo/FloppaLand_mini_logo.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/main.css') }}">
+    <link rel="stylesheet" href="https://fontlibrary.org//face/minecraftia"> 
     <link href="https://fonts.bunny.net/css?family=Space+Grotesk:wght@500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script  type="text/javascript" src="jquery-3.1.0.min.js"></script>
@@ -14,13 +15,30 @@
 <body>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <nav class="desktop_navbar">
-      <a href="/#"><img class="desktop_navbar_logo_img" src="/static/FloppaLand_mini_logo.png" alt="logo"></a>
-      <a href="/register" class="desktop_navbar_link">Регистрация</a>
-      <a href="/skin" class="desktop_navbar_link">Смена скина</a>
+      <a href="{{ url_for('index') }}"><img class="desktop_navbar_logo_img" src="{{ url_for('static', filename='logo/FloppaLand_mini_logo.png') }}" alt="logo"></a>
+      {% if current_user.is_anonymous %}
+      <a href="{{ url_for('login') }}" class="desktop_navbar_link">Вход</a>
+      {% else %}
+      <a href="{{ url_for('profile') }}" class="desktop_navbar_link">Профиль</a>
+      {% endif %}
       <a href="https://discord.com/invite/uHJxq9Yzgw" class="desktop_navbar_link">Discord</a>
+      <a href="{{ url_for('about') }}" class="desktop_navbar_link">О нас</a>
+      <a href="{{ url_for('rules') }}" class="desktop_navbar_link">Правила</a>
       
-      <div class="desktop_navbar_link2_div">
-          <a href="#join" class="desktop_navbar_link2 scroll">Начать играть</a>
+      <div class="desktop_navbar_right">
+          {% if current_user.is_anonymous %}
+            <div class="desktop_navbar_link2_div">
+              <a href="{{ url_for('login') }}" class="desktop_navbar_link2">Войти</a>
+            </div>
+          {% else %}
+          <div class="desktop_navbar_profile_main">
+            <div  class="desktop_navbar_profile_text_div">
+                <a href="{{ url_for('profile') }}" class="desktop_navbar_profile_name">{{ current_user.username }}</a>
+                <a href="{{ url_for('logout') }}" class="desktop_navbar_profile_logout">Выйти</a>
+            </div>
+            <img src= "{{ url_for('head', username=current_user.username) }}" alt="profile img" class="profile_img" style="height: 50px; image-rendering: pixelated; border-radius: 15%">
+          </div>
+          {% endif %}
       </div>
     </nav>
     <div class="mobile_navbar">

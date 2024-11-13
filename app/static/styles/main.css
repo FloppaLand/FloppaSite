@@ -1,12 +1,19 @@
+@font-face {
+    font-family: 'Minecraft';
+    src: URL('minecraft.ttf') format('truetype');
+}
+
 :root {
     --nice-padding: 6rem;
     --roundness: 0.75rem;
     --accent1: #02db02;
     --accent2: #05b305;
-    --accent2_transp: #05b30555;
+    --accent3: #05b3b3;
+    --accent4: #982ea7;
+    --accent2_transp: #06a7067e;
     --background1: #212529;
     --background2: #16191b;
-
+    --background3: #335351a1;
 
     color-scheme: dark;
 }
@@ -139,12 +146,15 @@ body {
     text-decoration: none;
     text-align: center;
 }
-.desktop_navbar_link2_div {
-    font-size: 1.2rem;
-    padding: .8rem;
-    transition: all .5s;
+.desktop_navbar_right {
     margin-left: auto;
     margin-right: 2rem;
+    
+}
+.desktop_navbar_link2_div {
+    padding: .8rem;
+    font-size: 1.2rem;
+    transition: all .5s;
     font-weight: 700;
     border: solid 1px var(--accent1);
     border-radius: var(--roundness);
@@ -154,6 +164,46 @@ body {
     border: solid 1px var(--accent2);
     background-color: var(--accent2);
     transform: scale(1.05)
+}
+
+.desktop_navbar_profile_main {
+    display: flex;
+    flex-direction: row;
+    
+    background: linear-gradient(130deg, rgba(72,130,129,0.2) 0%, rgba(5,179,5,0.1) 60%, rgba(23,26,29,0.5) 100%);
+    border-radius: var(--roundness);
+    align-items: center;
+    padding-right: 0.5rem;
+    backdrop-filter: blur(15px);
+}
+
+.desktop_navbar_profile_name {
+    font-size: 1.4rem;
+    font-family: 'Minecraft';
+    text-decoration: none;
+    color: white;
+    transition: all .5s;
+}
+.desktop_navbar_profile_name:hover {
+    color: var(--accent3);
+}
+.desktop_navbar_profile_logout {
+    font-size: 0.9rem;
+    padding-top: 0.4rem;
+    font-family: 'Minecraft';
+    text-decoration: none;
+    color: #cc4040;
+    transition: all .5s;
+}
+.desktop_navbar_profile_logout:hover {
+    color: #ff5050;
+}
+
+.desktop_navbar_profile_text_div {
+    display: flex;
+    flex-direction: column;
+    margin-right: 2rem;
+    padding: 0.5rem;
 }
 
 .mobile_navbar {
@@ -231,12 +281,30 @@ body {
     align-items: center;
     align-content: center;
     justify-content: center;
-    background: rgba(0, 0, 0, .5) url('https://imgur.com/cGMLytH.png');
-    background-blend-mode: darken;
-    background-repeat: no-repeat;
-    background-position: 50% 50%;
 }
+.main1::before {
+    
+  content: "";
+  position: fixed;
+  top: -5%;
+  left: -5%;
+  right: -5%;
+  z-index: -1;
 
+  display: block;
+  background: rgba(0, 0, 0, .5) url('../images/background.png');
+  background-size:cover;
+  width: 110%;
+  height: 110%;
+  background-blend-mode: darken;
+  background-repeat: no-repeat;
+
+  -webkit-filter: blur(5px);
+  -moz-filter: blur(5px);
+  -o-filter: blur(5px);
+  -ms-filter: blur(5px);
+  filter: blur(5px);
+}
 .main1_logo_a {
     margin-bottom: var(--nice-padding);
     cursor: default;
@@ -265,6 +333,10 @@ body {
 .main1_actcent {
     font-weight: 800;
     color:var(--accent1);
+}
+.main1_actcent2 {
+    font-weight: 800;
+    color:var(--accent4);
 }
 .main1_download_div {
     border-radius: var(--roundness);
@@ -431,6 +503,7 @@ body {
 
 
 .main4 {
+    background-color: var(--background1);
     min-height: 10rem;
     width:100%;
     display: flex;
@@ -832,13 +905,37 @@ ol li::before {
     border-radius: var(--roundness);
     padding: 0.75rem;
     text-align: center;
-    width: 100%;
     max-width: 16rem;
-
+    width: 100%;
 }
 .msg_error {
-    background-color: rgb(192, 46, 46);
+    color: rgb(192, 46, 46);
 }
 .msg_success {
     background-color: var(--accent2);
+}
+.input_box {
+    width: 20rem;
+    margin: 0.3rem;
+    text-align: center;
+    align-items: center;
+}
+
+.input {
+    border-radius: var(--roundness);
+    width: 16rem;
+    padding: 1rem;
+    text-align: center;
+    font-size: 14px;
+}
+
+  
+.button_submit {
+    width: 20rem;
+    padding: 1rem;
+    margin: 0.5rem;
+    font-size: medium;
+    border: 0;
+    border-radius: var(--roundness);
+    background-color: var(--accent2_transp);
 }

@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% from "macros.html" import success_macro, error_macro %}
+{% block content %}
+<style>
+    html {
+      height: 100%;
+  } 
+  body {
+      display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    
+          }
+  .main {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      flex: 1 0 auto;
+  }
+  .base {
+    display: grid;
+    grid-template-columns: repeat(6, 10rem);
+    grid-template-rows: repeat(4, 10rem);
+    grid-auto-flow: row;
+    gap: 20px;
+    grid-auto-flow: column;
+  }
+  .block {
+    background-color: var(--background2);
+    border-radius: var(--roundness);
+  }
+  .g2x3 {
+    grid-column: span 3;
+    grid-row: span 2;
+  }
+  .g1x3 {
+    grid-column: span 3;
+    grid-row: span 1;
+  }
+  .g3x1 {
+    grid-column: span 1;
+    grid-row: span 3;
+  }
+  .g3x2 {
+    grid-column: span 2;
+    grid-row: span 3;
+  }
+  #Home {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+  }
+  #TimeStats {
+    display: flex;
+    flex-direction: column;
+  }
+  #ChangePassword form{
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+
+  }
+  #SkinPreview {
+    display: flex;
+    flex-direction: column;
+  }
+  #SkinPreview h1 {
+    vertical-align: middle;
+    padding-bottom: 0;
+    margin-bottom: 0;
+
+  }
+  #skinImg {
+    width:100%;
+    height:100%;
+    object-fit: cover;
+    overflow: hidden;
+  }
+  .text_anim {
+        background-image: linear-gradient(45deg, #1D976C,#93F9B9, #71B280, #134E5E);
+        color: transparent;
+        -webkit-background-clip: text; /* Edge, Chrome */
+        background-clip: text; /* Safari, FF */
+        animation: gradientAnimation 8s linear infinite;
+        animation-direction: alternate;
+        background-size: 300% 100%;
+        }
+
+        @keyframes gradientAnimation {
+        0% {
+            background-position: 0;
+        }
+        to {
+            background-position: 100%;
+        }
+}
+.skinPoseBut {
+    padding: 0.2rem;
+    border: 0;
+}
+.posePanel {
+    width: 100%;
+    display: inline-grid;
+    grid-auto-flow: column;
+    justify-self: flex-end
+}
+</style>
+<div class="main">
+    <div class="base">
+        <div id="Home" class="block g1x3">
+            <h2 style="align-self: center;" class="text_anim">Привет {{current_user.username}}!</h2>
+        </div>
+        <div id="SkinPreview" class="block g3x2">
+            <h1>Текущий скин</h1>
+            <div class="skin">
+                <img id="skinImg" src="https://starlightskins.lunareclipse.studio/render/ultimate/test/full?cameraWidth=680&cameraHeight=800&skinUrl=https://s.namemc.com/i/5b3c6294b2eef693.png" alt="">
+                <div class="posePanel">
+                    <button onclick= "showImage(this.id)" id="ultimate" class="skinPoseBut" style="border-top-left-radius: var(--roundness);border-bottom-left-radius: var(--roundness);"> Обычный </button>
+                    <button onclick= "showImage(this.id);" id="walking" class="skinPoseBut"> Идущий </button>
+                    <button onclick= "showImage(this.id);" id="isometric" class="skinPoseBut"> Изометрический </button>
+                    <button onclick= "showImage(this.id);" id="criss_cross" class="skinPoseBut" style="border-top-right-radius: var(--roundness);border-bottom-right-radius: var(--roundness);"> Сидящий </button>
+                </div>
+            </div>
+        </div>
+        <div id="ChangeSkin" class="block g3x2">
+            <h1>Изменить скин</h1>
+            {{ success_macro(message, "success_skin") }}
+            <form action="{{ url_for('profile', formid=1) }}" method="post" enctype="multipart/form-data">
+                {{ set_skin_form.csrf_token }}
+                {{ error_macro(set_skin_form.skinfile.errors, formid, 1) }}
+                {{ set_skin_form.skinfile }}
+                {{ set_skin_form.submit1(class="button_submit") }}
+            </form>
+        </div>
+        <div id="TimeStats" class="block g1x3">
+            <h2>Время в игре:</h2>
+            <span style="text-align: center; vertical-align: middle;">5 часов</span>
+        </div>
+        <div id="ChangePassword" class="block g3x2">
+            <h1>Сменить пароль</h1>
+            {{ success_macro(message, "success_pass") }}
+            <form action="{{ url_for('profile', formid=2) }}" method="post">
+              {{ change_password_form.csrf_token }} 
+              
+                {{ error_macro(change_password_form.password.errors, formid, 2) }}
+                {{ change_password_form.password(class="input", placeholder="Новый пароль") }}
+                {{ error_macro(change_password_form.password2.errors, formid, 2) }}
+                {{ change_password_form.password2(class="input", placeholder="Повторите пароль") }}
+                {{ change_password_form.submit2(class="button_submit") }}
+            </form>
+        </div>
+        
+        
+    </div>
+</div>
+
+
+
+<script>
+    function showImage(object) {
+      let src = `https://starlightskins.lunareclipse.studio/render/${object}/test/full?cameraWidth=680&cameraHeight=800&dropShadow=true&skinUrl=https://s.namemc.com/i/5b3c6294b2eef693.png`
+      document.getElementById("skinImg").src = src;
+    }
+</script>
+
+{% endblock %}

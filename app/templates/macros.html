@@ -1,0 +1,16 @@
+{% macro error_macro(errors, formid=0, form_id=0) %}
+    {% if formid == form_id %}
+        {% for error in errors %}
+            <span class="msg_error">{{ error }}</span>
+        {% endfor %}
+    {% endif %}
+{% endmacro %}
+{% macro success_macro(message, category) %}
+    {% with messages = get_flashed_messages(category_filter=[category]) %}
+        {% if messages %}
+        {% for msg in messages %}
+            <p class="message msg_success">{{ msg }}</p>
+        {% endfor %}
+        {% endif %}
+    {% endwith %}
+{% endmacro %}

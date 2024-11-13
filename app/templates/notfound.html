@@ -24,7 +24,7 @@
             align-items: center;
             justify-content: center;
         }
-        img {
+        .box img {
             height: auto;
             width:650px;
             padding: 3rem;
@@ -45,7 +45,7 @@
 </style>
 <div class="main">
     <div class="box">
-        <img src="/static/pageNotFound.png" alt="Page Not Found 404">
+        <img src="{{ url_for('static', filename='images/pageNotFound.png') }}" alt="Page Not Found 404">
 
         <a href="/" class="backButton">На главную</a>
     </div>
