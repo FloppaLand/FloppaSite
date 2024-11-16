@@ -3,4 +3,4 @@ flask-login
 flask_wtf
 flask_sqlalchemy
 flask_migrate
-Flask-Reuploaded
+python-dotenv
