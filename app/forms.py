@@ -5,6 +5,7 @@ from flask_wtf.file import FileRequired, FileAllowed
 import sqlalchemy as sa
 from app import db
 from app.models import User
+from PIL import Image
 
 class LoginForm(FlaskForm):
   username = StringField('Ник', validators=[DataRequired("Это поле обязательное!")])
@@ -35,6 +36,16 @@ class RegistrationForm(FlaskForm):
 class SetSkinForm(FlaskForm):
     skinfile = FileField(validators=[FileAllowed(['png'], 'Неправельный файл скина!'), FileRequired('Не выбран файл!')])
     submit1 = SubmitField('Загрузить')
+
+    def validate_skinfile(form, field):
+        try:
+            img = Image.open(field.data)
+            img.verify()
+        except:
+            raise ValidationError("Файл скина повреждён")
+        if img.size != (64, 64): # Проверка размера скина. Должно быть 64x64 px
+            raise ValidationError("Скин должен быть размером 64x64 px")
+       
 
 class ChangePasswordForm(FlaskForm):
   password = PasswordField('Password', validators=[DataRequired("Это поле обязательное!")])

@@ -9,6 +9,7 @@ from base64 import b64encode
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, SetSkinForm, ChangePasswordForm
 from app.models import User
+from werkzeug.utils import secure_filename, safe_join
 
 @app.route('/')
 @app.route('/index')
@@ -53,12 +54,11 @@ def register():
     return render_template('register.html', title='Register', form=form)
 
 def get_skin_patch(filename):
-   base_patch = os.path.join(os.getcwd(), app.config['UPLOADED_SKINS_DIR'])
-   path = os.path.join(base_patch, filename + ("" if os.path.splitext(filename)[1] else ".png"))
+   path = safe_join(app.config['UPLOADED_SKINS_DIR'], filename + ("" if filename.lower().endswith(".png") else ".png")) # Путь до файла с проверкой на .png
    if os.path.exists(path):
     return path
    else:
-      return os.path.join(base_patch, "base.png")
+      return safe_join(app.config['UPLOADED_SKINS_DIR'], "base.png")
 
 @app.route('/head/<string:username>')
 def head(username):
@@ -74,7 +74,8 @@ def head(username):
 
 @app.route('/skin/<string:filename>')
 def get_skin(filename):
-  return send_file(get_skin_patch(filename), as_attachment=False)
+  filename = secure_filename(filename)
+  return send_from_directory(get_skin_patch(filename), as_attachment=False)
 
 
 @app.route('/profile', methods=['GET', 'POST'])
@@ -84,14 +85,19 @@ def profile():
     change_password_form = ChangePasswordForm()
     formid = request.args.get('formid', 1, type=int)
     if set_skin_form.validate_on_submit() and formid == 1:
-      set_skin_form.skinfile.data.save(get_skin_patch(current_user.username))
+
+      file = set_skin_form.skinfile.data
+      file.seek(0) # Нужно после операций с файлом
+      file.save(safe_join(app.config['UPLOADED_SKINS_DIR'], current_user.username + ".png"))
+
       flash("Скин успешно установлен!", category="success_skin")
-      
+      app.logger.info(f"[{current_user.username}] Скин изменён")
+         
     if change_password_form.submit2.data and change_password_form.validate_on_submit() and formid == 2:
       current_user.set_password(change_password_form.password.data)
       db.session.commit()
       flash("Пароль изменён!", category="success_pass")
-      print('Password Changed! for ', current_user)
+      app.logger.info(f"[{current_user.username}] Пароль изменён")
     return render_template('profile.html', change_password_form=change_password_form, set_skin_form=set_skin_form, formid=formid)
    
 @app.route('/about')
@@ -107,5 +113,4 @@ def notfound():
 
 @app.errorhandler(404)
 def handle_404_error(error):
-    print(error)
-    return render_template('notfound.html')
+    return render_template('notfound.html'), 404
