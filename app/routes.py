@@ -54,15 +54,15 @@ def register():
     return render_template('register.html', title='Register', form=form)
 
 def get_skin_patch(filename):
-   path = safe_join(app.config['UPLOADED_SKINS_DIR'], filename + ("" if filename.lower().endswith(".png") else ".png")) # Путь до файла с проверкой на .png
-   if os.path.exists(path):
-    return path
+   filename = filename + ("" if filename.lower().endswith(".png") else ".png")# проверка на .png
+   if os.path.exists(safe_join(app.config['UPLOADED_SKINS_DIR'], filename)):
+    return [app.config['UPLOADED_SKINS_DIR'], filename]
    else:
-      return safe_join(app.config['UPLOADED_SKINS_DIR'], "base.png")
+      return [app.config['UPLOADED_SKINS_DIR'], "base.png"]
 
 @app.route('/head/<string:username>')
 def head(username):
-    img = Image.open(get_skin_patch(username)).convert("RGBA") 
+    img = Image.open(safe_join(get_skin_patch(username))).convert("RGBA") 
     first_layer = img.crop((8, 8, 16, 16))
     second_layer = img.crop((40, 8, 48, 16))
     second_layer = ImageEnhance.Brightness(second_layer).enhance(1.1)
@@ -75,7 +75,8 @@ def head(username):
 @app.route('/skin/<string:filename>')
 def get_skin(filename):
   filename = secure_filename(filename)
-  return send_from_directory(get_skin_patch(filename), as_attachment=False)
+  path, name = get_skin_patch(filename)
+  return send_from_directory(path, name, as_attachment=False)
 
 
 @app.route('/profile', methods=['GET', 'POST'])
