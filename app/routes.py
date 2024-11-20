@@ -3,7 +3,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 import sqlalchemy as sa
 from io import BytesIO
 import os
-from PIL import Image, ImageEnhance
+from PIL import Image
 from urllib.parse import urlsplit
 from base64 import b64encode
 from app import app, db
@@ -62,10 +62,9 @@ def get_skin_patch(filename):
 
 @app.route('/head/<string:username>')
 def head(username):
-    img = Image.open(safe_join(get_skin_patch(username))).convert("RGBA") 
+    img = Image.open(safe_join(*get_skin_patch(username))).convert("RGBA")
     first_layer = img.crop((8, 8, 16, 16))
     second_layer = img.crop((40, 8, 48, 16))
-    second_layer = ImageEnhance.Brightness(second_layer).enhance(1.1)
     first_layer.paste(second_layer, (0, 0), second_layer)
     image_io = BytesIO()
     first_layer.save(image_io, 'PNG')
