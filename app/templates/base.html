@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://fontlibrary.org//face/minecraftia"> 
     <link href="https://fonts.bunny.net/css?family=Space+Grotesk:wght@500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script  type="text/javascript" src="jquery-3.1.0.min.js"></script>
     <!-- Yandex.Metrika counter -->
     <script type="text/javascript" >
@@ -39,8 +40,7 @@
       <a href="{{ url_for('profile') }}" class="desktop_navbar_link">Профиль</a>
       {% endif %}
       <a href="https://discord.com/invite/uHJxq9Yzgw" class="desktop_navbar_link">Discord</a>
-      <a href="{{ url_for('about') }}" class="desktop_navbar_link">О нас</a>
-      <a href="{{ url_for('rules') }}" class="desktop_navbar_link">Правила</a>
+      <a href="{{ url_for('archive') }}" class="desktop_navbar_link">Архив</a>
       
       <div class="desktop_navbar_right">
           {% if current_user.is_anonymous %}
@@ -59,12 +59,17 @@
       </div>
     </nav>
     <div class="mobile_navbar">
-      <a href="/#" class="mobile_navbar_logo_img_a"><img class="mobile_navbar_logo_img" src="/static/FloppaLand_mini_logo.png" alt="logo"></a>
+      <a href="{{ url_for('index') }}" class="mobile_navbar_logo_img_a"><img class="mobile_navbar_logo_img" src="{{ url_for('static', filename='logo/FloppaLand_mini_logo.png') }}" alt="logo"></a>
       <div id="mobile_navbar_links">
-          <a class="mobile_navbar_link" onclick="mobile_navbar_link_hider()" href="/register">Регистрация</a>
+          {% if current_user.is_anonymous %}
+            <a class="mobile_navbar_link" onclick="mobile_navbar_link_hider()" href="{{ url_for('login') }}">Войти</a>
+          {% else %}
+            <a class="mobile_navbar_link" onclick="mobile_navbar_link_hider()" href="{{ url_for('profile') }}"><img src= "{{ url_for('head', username=current_user.username) }}" class="profile_img" style="height: 50px; image-rendering: pixelated; border-radius: 15%"> Профиль</a>
+            <a class="mobile_navbar_link" onclick="mobile_navbar_link_hider()" href="{{ url_for('logout') }}">Выйти</a>
+          {% endif %}
+          
           <a class="mobile_navbar_link" onclick="mobile_navbar_link_hider()" href="/skin">Смена скина</a>
           <a class="mobile_navbar_link" onclick="mobile_navbar_link_hider()" href="https://discord.com/invite/uHJxq9Yzgw">Discord</a>
-          <a class="mobile_navbar_link scroll" onclick="mobile_navbar_link_hider()" href="http://floppaland.fun/#join">Начать играть</a>
         </div>
         <div class="icon" onclick="mobile_navbar_link_hider()">
             <i class="fa fa-bars"></i>

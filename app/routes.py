@@ -3,6 +3,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 import sqlalchemy as sa
 from io import BytesIO
 import os
+import json
 from PIL import Image
 from urllib.parse import urlsplit
 from base64 import b64encode
@@ -99,7 +100,19 @@ def profile():
       flash("Пароль изменён!", category="success_pass")
       app.logger.info(f"[{current_user.username}] Пароль изменён")
     return render_template('profile.html', change_password_form=change_password_form, set_skin_form=set_skin_form, formid=formid)
-   
+
+@app.route('/archive')
+def archive():
+  filename = request.args.get('filename', type=str)
+  with open('./data/archive-data.json', encoding='utf-8') as f:
+    data = json.load(f)
+  print(data[0]['name'])
+  if filename is None: 
+    return render_template('archive.html', contents=data)
+  else:
+     filename = secure_filename(filename)
+     return send_from_directory(app.config["ARCHIVE_FILES_DIR"], filename)
+
 @app.route('/about')
 def about():
    return 'About'

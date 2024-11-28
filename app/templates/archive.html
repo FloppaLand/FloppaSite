@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+    .main {
+        padding-top: calc(var(--nice-padding));
+        display: flex;
+        width: 100%;
+        flex-direction: column;
+    }
+    .headline {
+        padding-bottom: 1rem;
+    }
+    .list-div {
+        background-color: var(--background2);
+        padding-top: 2rem;
+        width: 100%;
+        min-height: 100rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: start;
+        flex-wrap: wrap;
+    }
+
+    .card {
+        display: flex;
+        height: 24rem;
+        width: 48rem;
+        border-radius: var(--roundness);
+        flex-direction: row;
+        background-color: var(--background1);
+        margin: 1rem;
+    }
+
+    .card .content-image {
+        width: 50%;
+        height: 100%;
+        object-fit: cover;
+        border-top-right-radius: var(--roundness);
+        border-bottom-right-radius: var(--roundness);
+    }
+    .label-div {
+        width: 100%;
+        height: 2rem;
+    }
+    .label {
+        float: left;
+        color: var(--accent3);
+        font-family:Arial, Helvetica;
+    }
+    .date {
+        float: right;
+    }
+    .material-icons {
+        vertical-align:middle;
+    }
+    .modloader-icon {
+        width: 24px;
+        height: 24px;
+        vertical-align:middle;
+    }
+    .content {
+        width: 60%;
+        height: 100%;
+        margin: 1rem;
+    }
+
+    .card .label {
+        text-align: center;
+        font-size: 1.5rem;
+        padding-bottom: 1rem;
+    }
+
+    .card .description {
+        font-size: medium;
+    }
+    .card .downloads {
+        display: flex;
+        flex-direction: row;
+    }
+    .download-button {
+        margin: 20px auto;
+        padding: 0;
+        width: auto;
+        text-align: center;
+    }
+
+    .download-inner {
+        height: 40px;
+        display: inline-block;
+        border: 3px solid var(--accent2);
+        font-family: 'Open Sans', sans-serif;
+        font-size: 18px;
+        font-weight: 400;
+        text-align: center;
+        text-decoration: none;
+        color: var(--accent2);
+        overflow: hidden;
+        border-radius: 5px;
+    }
+
+    a.download-inner {
+        padding: 0;
+        margin: 0;
+        line-height: 0;
+    }
+
+    .download-inner .icon {
+        margin-right: 6px;
+    }
+
+    .download-inner .download-front,
+    .download-inner .download-back {
+        display: block;
+        padding: 0 20px;
+        line-height: 40px;
+        transition: margin .4s;
+    }
+
+    .download-inner .download-front {
+        background-color: var(--accent2);
+        color: #fff;
+    }
+
+    .download-inner .download-backup {
+        background-color: #f28007;
+        color: #fff;
+    }
+
+    .download-inner:hover .download-front {
+        margin-top: -40px;
+    }
+</style>
+
+<div class="main">
+    <a class="headline">Архив Прошлых Серверов</a>
+    <div class="list-div">
+        {% for content in contents %}
+        <div class="card">
+            <div class="content">
+                <div class="label-div">
+                    <a class="label"><b>{{ content['name'] }}</b></a>
+                    <span class="date"><span class="material-icons">event</span> {{ content['release-date'] }} - {{ content['end-date'] }}</span>    
+                </div><br />
+                <img class="modloader-icon" src="{{ url_for('static', filename='icons/' + content['modloader']) + '.png' }}" alt="{{ content['modloader'] }}"> <span class="version">{{ content['version'] }}</span>
+                <hr style="border: 0; border-top: 3px solid #bbb">
+                <div class="description">{{ content['desc'] }}</div>
+                <hr style="border: 0; border-top: 3px dotted #bbb">
+                <div class="downloads">
+                    {% for file in content['files'] %}
+                    <div class="download-button">
+                        <a class="download-inner" href="{{ url_for('archive', filename=file['name']) }}" rel="nofollow" target="_blank"><br />
+                            <div class="download-front">
+                                <span class="icon fa fa-file-archive-o"></span> {{ file['label'] }}<br />
+                            </div>
+                            <div class="download-back">
+                                <span class="icon fa fa-hdd-o"></span>{{ file['size'] }}<br />
+                            </div>
+                        </a><br />
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <img class="content-image" src="{{ url_for('static', filename='images/' + content['image']) }}" alt="">
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

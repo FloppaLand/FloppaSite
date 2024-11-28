@@ -1,4 +1,4 @@
-/data/skins/*
+/data/*
 .env
 .flaskenv
 __pycache__
