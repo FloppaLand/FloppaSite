@@ -104,7 +104,7 @@ def profile():
 @app.route('/archive')
 def archive():
   filename = request.args.get('filename', type=str)
-  with open('./data/archive-data.json', encoding='utf-8') as f:
+  with open(os.path.join(app.config['DATA_DIR'], 'archive-data.json'), encoding='utf-8') as f:
     data = json.load(f)
   print(data[0]['name'])
   if filename is None: 
