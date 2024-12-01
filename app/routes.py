@@ -11,6 +11,9 @@ from app import app, db
 from app.forms import LoginForm, RegistrationForm, SetSkinForm, ChangePasswordForm
 from app.models import User
 from werkzeug.utils import secure_filename, safe_join
+from minepi import Skin
+import asyncio
+import requests
 
 @app.route('/')
 @app.route('/index')
@@ -63,19 +66,40 @@ def get_skin_patch(filename):
 
 @app.route('/head/<string:username>')
 def head(username):
-    img = Image.open(safe_join(*get_skin_patch(username))).convert("RGBA")
-    first_layer = img.crop((8, 8, 16, 16))
-    second_layer = img.crop((40, 8, 48, 16))
-    first_layer.paste(second_layer, (0, 0), second_layer)
-    image_io = BytesIO()
-    first_layer.save(image_io, 'PNG')
-    image_io.seek(0)
-    return send_file(image_io, mimetype="image/png", as_attachment=False, download_name='%s.png' % username)
+  img = Image.open(safe_join(*get_skin_patch(username))).convert("RGBA")
+  first_layer = img.crop((8, 8, 16, 16))
+  second_layer = img.crop((40, 8, 48, 16))
+  first_layer.paste(second_layer, (0, 0), second_layer)
+  image_io = BytesIO()
+  first_layer.save(image_io, 'PNG')
+  image_io.seek(0)
+  return send_file(image_io, mimetype="image/png", as_attachment=False, download_name='%s.png' % username)
 
-@app.route('/skin/<string:filename>')
-def get_skin(filename):
-  filename = secure_filename(filename)
-  path, name = get_skin_patch(filename)
+def resize(image_pil, width, height):
+    background = Image.new('RGBA', (width, height), (0, 0, 0, 0))
+    offset = (round( (width - image_pil.width) / 2), round((height - image_pil.height) / 2))
+    background.paste(image_pil, offset)
+    return background
+
+@app.route('/body/<string:username>')
+def get_body(username):
+  raw_skin = Image.open(safe_join(*get_skin_patch(username)))
+  s = Skin(raw_skin=raw_skin)
+
+  renders=[]
+  for i in range(1, 360, 5):
+      asyncio.run(s.render_skin(vr=-30, hr=i))
+      renders.append(resize(s.skin, 200, 400))
+
+  image_io = BytesIO()
+  renders[0].save(image_io, 'GIF', save_all=True, append_images=renders[1:], duration=80, loop=0, disposal=2)
+  image_io.seek(0)
+  return send_file(image_io, mimetype="image/gif", as_attachment=False, download_name='%s.gif' % username)
+
+@app.route('/skin/<string:username>')
+def get_skin(username):
+  username = secure_filename(username)
+  path, name = get_skin_patch(username)
   return send_from_directory(path, name, as_attachment=False)
 
 
@@ -99,6 +123,13 @@ def profile():
       db.session.commit()
       flash("Пароль изменён!", category="success_pass")
       app.logger.info(f"[{current_user.username}] Пароль изменён")
+    if formid == 3:
+      response = requests.get("https://mineskin.eu/skin/" + current_user.username)
+      filename = safe_join(app.config['UPLOADED_SKINS_DIR'], current_user.username + ".png")
+      print(response.status_code ,filename)
+      if response.status_code == 200:
+        with open(filename, 'wb') as file:
+              file.write(response.content)
     return render_template('profile.html', change_password_form=change_password_form, set_skin_form=set_skin_form, formid=formid)
 
 @app.route('/archive')
