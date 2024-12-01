@@ -5,4 +5,4 @@ flask_sqlalchemy
 flask_migrate
 pillow
 python-dotenv
-minepi
+MinePI
