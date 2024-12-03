@@ -9,3 +9,4 @@ class Config:
   DATA_DIR =                os.environ.get('DATA_DIR')      or os.path.join(basedir, 'data/')
   UPLOADED_SKINS_DIR =      os.environ.get('SKIN_DIR')      or os.path.join(DATA_DIR, '/skins')
   ARCHIVE_FILES_DIR =       os.environ.get('ARCHIVE_FILES_DIR') or os.path.join(DATA_DIR, '/archive')
+  BODY_RENDERS_DIR =        os.environ.get('BODY_RENDERS_DIR')  or os.path.join(DATA_DIR, '/renders')

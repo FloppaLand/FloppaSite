@@ -10,10 +10,8 @@ from app import app, db
 from app.forms import LoginForm, RegistrationForm, SetSkinForm, ChangePasswordForm
 from app.models import User
 from werkzeug.utils import secure_filename, safe_join
-from minepi import Skin
-import asyncio
 import requests
-from app.utils import get_skin_patch, resize_bg
+from app.utils import calculate_file_hash, get_skin_patch, render_body, update_hash
 from mcstatus import JavaServer
 
 @app.route('/')
@@ -91,18 +89,32 @@ def head(username):
 
 @app.route('/body/<string:username>')
 def get_body(username):
-  raw_skin = Image.open(safe_join(*get_skin_patch(username)))
-  s = Skin(raw_skin=raw_skin)
+  with open(os.path.join(app.config['DATA_DIR'], 'render-cache.json'), encoding='utf-8') as cf:
+    '''структура json
+    [
+    "username":"render_cache",
+    ...
+    ]
+    '''
+    caches = json.load(cf)
 
-  renders=[]
-  for i in range(1, 360, 5):
-      asyncio.run(s.render_skin(vr=-30, hr=i))
-      renders.append(resize_bg(s.skin, 200, 400))
+  skin_path = safe_join(*get_skin_patch(username))
+  skin_hash = calculate_file_hash(skin_path)
 
-  image_io = BytesIO()
-  renders[0].save(image_io, 'GIF', save_all=True, append_images=renders[1:], duration=80, loop=0, disposal=2)
-  image_io.seek(0)
-  return send_file(image_io, mimetype="image/gif", as_attachment=False, download_name='%s.gif' % username)
+  render_cache = caches.get(username)
+
+  # рендерим скин если он изменился
+  if skin_hash != caches.get(username):
+
+    if render_cache != None:
+      render_path = safe_join(app.config['BODY_RENDERS_DIR'], render_cache + '.gif')
+      if os.path.exists(render_path):
+        os.remove(render_path)
+    
+    render_cache = update_hash(caches, username, skin_hash)
+    render_body(skin_path, render_cache)
+
+  return send_from_directory(app.config['BODY_RENDERS_DIR'], render_cache + '.gif')
 
 @app.route('/skin/<string:username>')
 def get_skin(username):
@@ -138,7 +150,7 @@ def profile():
       # Импорт скина с офицалки
       response = requests.get("https://mineskin.eu/skin/" + current_user.username)
       filename = safe_join(app.config['UPLOADED_SKINS_DIR'], current_user.username + ".png")
-      print(response.status_code ,filename)
+      
       if response.status_code == 200:
         with open(filename, 'wb') as file:
               file.write(response.content)
@@ -149,7 +161,7 @@ def archive():
   filename = request.args.get('filename', type=str)
   with open(os.path.join(app.config['DATA_DIR'], 'archive-data.json'), encoding='utf-8') as f:
     data = json.load(f)
-  print(data[0]['name'])
+  
   if filename is None: 
     return render_template('archive.html', contents=data)
   else:
