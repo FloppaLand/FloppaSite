@@ -940,3 +940,10 @@ ol li::before {
     border-radius: var(--roundness);
     background-color: var(--accent2_transp);
 }
+.floppa_image {
+    position: absolute;
+    bottom: 3.3rem;
+    right: 0;
+    width: max-content;
+    width: 10rem;
+}

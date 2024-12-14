@@ -13,6 +13,7 @@ from werkzeug.utils import secure_filename, safe_join
 import requests
 from app.utils import calculate_file_hash, get_skin_patch, render_body, update_hash
 from mcstatus import JavaServer
+import random
 
 @app.route('/')
 @app.route('/index')
@@ -167,6 +168,11 @@ def archive():
   else:
      filename = secure_filename(filename)
      return send_from_directory(app.config["ARCHIVE_FILES_DIR"], filename)
+
+@app.route('/random_floppa')
+def random_floppa():
+  rand_floppa = random.choice(os.listdir(app.config["FLOPPA_DIR"]))
+  return send_from_directory(app.config["FLOPPA_DIR"], rand_floppa)
 
 @app.route('/notfound')
 def notfound():

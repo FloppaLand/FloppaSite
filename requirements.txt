@@ -7,3 +7,5 @@ pillow
 python-dotenv
 MinePI
 requests
+psycopg2
+mcstatus
