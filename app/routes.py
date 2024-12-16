@@ -1,17 +1,14 @@
-from flask import render_template, flash, redirect, url_for, request, send_file, send_from_directory
+from flask import render_template, flash, redirect, url_for, request, send_file, send_from_directory, make_response
 from flask_login import current_user, login_user, logout_user, login_required
 import sqlalchemy as sa
-from io import BytesIO
 import os
 import json
-from PIL import Image
-from urllib.parse import urlsplit
+from urllib.parse import urlsplit, urljoin
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, SetSkinForm, ChangePasswordForm
 from app.models import User
 from werkzeug.utils import secure_filename, safe_join
 import requests
-from app.utils import calculate_file_hash, get_skin_patch, render_body, update_hash
 from mcstatus import JavaServer
 import random
 
@@ -76,52 +73,6 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
 
-@app.route('/head/<string:username>')
-def head(username):
-  img = Image.open(safe_join(*get_skin_patch(username))).convert("RGBA")
-  first_layer = img.crop((8, 8, 16, 16))
-  second_layer = img.crop((40, 8, 48, 16))
-  first_layer.paste(second_layer, (0, 0), second_layer)
-  image_io = BytesIO()
-  first_layer.save(image_io, 'PNG')
-  image_io.seek(0)
-  return send_file(image_io, mimetype="image/png", as_attachment=False, download_name='%s.png' % username)
-
-
-@app.route('/body/<string:username>')
-def get_body(username):
-  with open(os.path.join(app.config['DATA_DIR'], 'render-cache.json'), encoding='utf-8') as cf:
-    '''структура json
-    [
-    "username":"render_cache",
-    ...
-    ]
-    '''
-    caches = json.load(cf)
-
-  skin_path = safe_join(*get_skin_patch(username))
-  skin_hash = calculate_file_hash(skin_path)
-
-  render_cache = caches.get(username)
-
-  # рендерим скин если он изменился
-  if skin_hash != caches.get(username):
-
-    if render_cache != None:
-      render_path = safe_join(app.config['BODY_RENDERS_DIR'], render_cache + '.gif')
-      if os.path.exists(render_path):
-        os.remove(render_path)
-    
-    render_cache = update_hash(caches, username, skin_hash)
-    render_body(skin_path, render_cache)
-
-  return send_from_directory(app.config['BODY_RENDERS_DIR'], render_cache + '.gif')
-
-@app.route('/skin/<string:username>')
-def get_skin(username):
-  username = secure_filename(username)
-  path, name = get_skin_patch(username)
-  return send_from_directory(path, name, as_attachment=False)
 
 
 @app.route('/profile', methods=['GET', 'POST'])
@@ -169,15 +120,34 @@ def archive():
      filename = secure_filename(filename)
      return send_from_directory(app.config["ARCHIVE_FILES_DIR"], filename)
 
-@app.route('/random_floppa')
-def random_floppa():
-  rand_floppa = random.choice(os.listdir(app.config["FLOPPA_DIR"]))
-  return send_from_directory(app.config["FLOPPA_DIR"], rand_floppa)
-
-@app.route('/notfound')
-def notfound():
-    return render_template('notfound.html')
 
 @app.errorhandler(404)
 def handle_404_error(error):
     return render_template('notfound.html'), 404
+
+@app.route("/sitemap")
+@app.route("/sitemap.xml")
+def sitemap():  
+  static_urls = []
+  for rule in app.url_map.iter_rules():
+      if not str(rule).startswith("/profile") and \
+         not str(rule).startswith("/logout") and \
+         not str(rule).startswith("/api"):
+            url = f"{request.host_url}{str(rule)}"
+            static_urls.append(url)
+
+  xml_sitemap = render_template("sitemap.xml", static_urls=static_urls)
+  response = make_response(xml_sitemap)
+  response.headers["Content-Type"] = "application/xml"
+
+  return response
+
+@app.route("/robots")
+@app.route("/robots.txt")
+def robots():
+  sitemap_url = urljoin(request.host_url, url_for('sitemap'))
+  robots_txt = render_template("robots.txt", sitemap_url=sitemap_url)
+  response = make_response(robots_txt)
+  response.headers["Content-Type"] = "text/plain"
+
+  return response
