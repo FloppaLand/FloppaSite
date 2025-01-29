@@ -7,15 +7,17 @@
     --nice-padding: 6rem;
     --roundness: 0.75rem;
     --accent1: #02db02;
+    --accent15: #116b11;
     --accent2: #05b305;
     --accent3: #05b3b3;
+    --accent3darker: #088181;
     --accent4: #982ea7;
     --accent5: #0c949e;
     --accent2_transp: #06a7067e;
     --background1: #212529;
     --background2: #16191b;
     --background3: #335351a1;
-
+    --background_captcha: #292a2b;
     color-scheme: dark;
 }
 

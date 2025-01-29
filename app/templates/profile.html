@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% from "macros.html" import success_macro, error_macro %}
+{% from "doom.html" import doom_captcha %}
 {% block content %}
 <style>
     html {
@@ -142,10 +143,11 @@
         <div id="ChangeSkin" class="block g3x2">
             <h1>Изменить скин</h1>
             {{ success_macro(message, "success_skin") }}
-            <form action="{{ url_for('profile', formid=1) }}" method="post" enctype="multipart/form-data">
+            <form id="SkinForm" action="{{ url_for('profile', formid=1) }}" method="post" enctype="multipart/form-data">
                 {{ set_skin_form.csrf_token }}
                 {{ error_macro(set_skin_form.skinfile.errors, formid, 1) }}
                 {{ set_skin_form.skinfile(accept=".png") }}
+                {{ doom_captcha() }}
                 {{ set_skin_form.submit1(class="button_submit") }}
             </form>
             <hr style="border: 0; border-top: 3px dotted #bbb">

@@ -1,0 +1,53 @@
+{% macro doom_captcha() %}
+  <link rel="stylesheet" href="doom.css">
+  <div class="captcha-container" tabindex="1">
+    <div class="captcha-header">
+      <h2>ВЫ ДОЛЖНЫ ЗАСЛУЖИТЬ СВОЙ СКИН!</h2>
+      <p>Убейте трёх монстров в DOOM®</p>
+    </div>
+
+    <div class="captcha-canvas-container">
+      <div id="status">Загрузка...</div>
+      <progress id="progress" value="0" max="100" hidden></progress>
+      <canvas class="captcha-canvas" id="canvas" oncontextmenu="event.preventDefault()" tabindex="-1"></canvas>
+      <div class="mobile-controls">
+        <div class="d-pad">
+          <button class="up">↑</button>
+          <button class="left">←</button>
+          <button class="right">→</button>
+          <button class="down">↓</button>
+        </div>
+        <button class="fire-button"></button>
+      </div>
+    </div>
+
+    <div class="captcha-footer">
+      <div class="captcha-controls">
+        <button class="captcha-button captcha-refresh-button" aria-label="Refresh challenge" id="refresh-button">
+          <span class="captcha-refresh-icon material-symbols-outlined">refresh</span>
+        </button>
+      </div>
+      <div class="status-message focus">Нажмите чтобы играть</div>
+      <div class="status-message death">Вы умерли! Повторите попытку</div>
+      <div class="status-message instructions">Используйте WASD и Пробел</div>
+      <button class="captcha-button captcha-verify-button" aria-label="Verify, 0 out of 3 monsters killed"
+        id="verify-button">
+        <span class="material-symbols-outlined captcha-verify-icon">
+          skull
+          </span>
+        <span>0/3</span>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    window.va =
+      window.va ||
+      function () {
+        (window.vaq = window.vaq || []).push(arguments);
+      };
+  </script>
+  <script src="doom_manager.js"></script>
+  <script async type="text/javascript" src="doom.js"></script>
+
+{% endmacro %}
