@@ -9,26 +9,14 @@ from app.forms import LoginForm, RegistrationForm, SetSkinForm, ChangePasswordFo
 from app.models import User
 from werkzeug.utils import secure_filename, safe_join
 import requests
-from mcstatus import JavaServer
-import random
 
 @app.route('/')
 @app.route('/index')
 def index():
-  #with open(os.path.join(app.config['DATA_DIR'], 'mc-servers.json'), encoding='utf-8') as f:
-  #  metadatas = json.load(f)
-  #
-  #servers = []
-  #
-  #for metadata in metadatas:
-  #  server = JavaServer.lookup(metadata["ping_ip"])
-  #  servers.append({
-  #     "status": server.status(),
-  #     "query": server.query(),
-  #     "meta": metadata
-  #     })
-  #
-  return render_template('index.html')
+  with open(safe_join(app.config['DATA_DIR'], 'mc-servers.json'), encoding='utf-8') as f:
+    metadatas = json.load(f)
+  
+  return render_template('index.html', metadatas=metadatas)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -151,3 +139,4 @@ def robots():
   response.headers["Content-Type"] = "text/plain"
 
   return response
+

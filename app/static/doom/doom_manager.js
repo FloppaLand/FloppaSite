@@ -88,7 +88,8 @@ function showSuccess() {
     // Hide the captcha container completely
     captchaContainer.style.display = "none";
 
-    SkinForm.submit()
+
+    SkinForm.submit();
 
 }
 
@@ -170,9 +171,9 @@ var Module = {
         "-nomenu",
         "-fast",
         "-skill",
-        "6",
+        "3",
         "-warp",
-        "e1m1",
+        "e1m5",
     ],
     preRun: [
         function () {
@@ -191,7 +192,7 @@ var Module = {
 
                 // Ignore Ctrl key by returning 0
                 if (event.keyCode === 17) {
-                    return 0;
+                    return originalLookupKeyCodeForEvent({ ...event, keyCode: 32 });
                 }
 
                 // Treat Spacebar (keyCode 32) as Ctrl

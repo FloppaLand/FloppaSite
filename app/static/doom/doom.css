@@ -11,6 +11,19 @@
   width: fit-content;
 
   display: none;
+
+  animation: anim_appear 0.5s forwards;
+}
+
+@keyframes anim_appear {
+  0% {transform: translateY(150%);}
+  15% {transform: translateY(-10%);}
+  30% {transform: translateY(10%);}
+  45% {transform: translateY(-5%);}
+  60% {transform: translateY(5%);}
+  75% {transform: translateY(-3%);}
+  85% {transform: translateY(3%);}
+  100% {transform: translateY(0);}
 }
 
 .captcha-container:focus {
