@@ -9,8 +9,80 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/main.css') }}">
     <link rel="stylesheet" href="https://fontlibrary.org//face/minecraftia"> 
     <link href="https://fonts.bunny.net/css?family=Space+Grotesk:wght@500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;900&family=Source+Code+Pro:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#116b11',  // Emerald green
+                        secondary: '#0d9488', // Teal
+                        accent: '#14b8a6',   // Light teal
+                        minecraft: '#55aa55',
+                        dark: '#212529',
+                        darker: '#16191b',
+                        darkless: '#335351a1',
+                        discord_dark: '#1e1f22'
+                    },
+                    fontFamily: {
+                        rubik: ['Rubik', 'sans-serif'],
+                        code: ['Source Code Pro', 'monospace']
+                    },
+                    boxShadow: {
+                        'minecraft': '8px 8px 0 rgba(0,0,0,0.3)',
+                        'minecraft-hover': '4px 4px 0 rgba(0,0,0,0.3)'
+                    },
+                    animation: {
+                        'floating': 'floating 3s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+                    },
+                    keyframes: {
+                        floating: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-12px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-stroke {
+                -webkit-text-stroke: 1.5px #0f172a;
+                text-stroke: 1.5px #0f172a;
+            }
+            .section {
+                @apply max-w-7xl mx-auto px-4 py-16 sm:py-24;
+            }
+            .pixel-border {
+                position: relative;
+                background-color: #f8fafc;
+                border: 3px solid #0f172a;
+            }
+            .pixel-border:before {
+                content: '';
+                position: absolute;
+                top: -10px;
+                left: -10px;
+                width: 100%;
+                height: 100%;
+                border: 3px solid #0f172a;
+                z-index: -1;
+            }
+            .pixel-border:hover:before {
+                top: -7px;
+                left: -7px;
+                transition: top 0.3s ease, left 0.3s ease;
+            }
+        }
+    </style>
+
     <!-- Yandex.Metrika counter -->
     <script type="text/javascript" >
       (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
@@ -32,7 +104,7 @@
 <body>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <nav class="desktop_navbar">
-      <a href="{{ url_for('index') }}"><img class="desktop_navbar_logo_img" src="{{ url_for('static', filename='logo/FloppaLand_mini_logo.png') }}" alt="logo"></a>
+      <a href="{{ url_for('index') }}"><img class="h-12 pl-16 pr-4" src="{{ url_for('static', filename='logo/FloppaLand_mini_logo.png') }}" alt="logo"></a>
       {% if current_user.is_anonymous %}
       <a href="{{ url_for('login') }}" class="desktop_navbar_link">Вход</a>
       {% else %}
@@ -84,11 +156,22 @@
             } 
         </script>
     </div>
-               {% block content %}
-               {% endblock %}
-               <footer class="copyright_div">
-                <a href="https://github.com/Zizazar" class="copyright">Проект создан Zizazr - 2023-2025 - </a>
-                <a href="https://github.com/FQQD/MCServer-Web-Template" class="copyright"> Основа сайта от FQQD</a>
-              </footer>
-            </body>
-          </html>
+      {% block content %}
+      {% endblock %}
+    <footer class="py-6 bg-darker w-full border-t-2 border-dark">
+        <div class="container mx-auto">
+            <div class="text-center">
+                <p class="text-gray-400">© 2025 FloppaLand Minecraft Server. Все права защищены.</p>
+                <div class="mt-4 flex justify-center space-x-4">
+                    <a href="https://discord.com/invite/uHJxq9Yzgw" class="text-gray-400 hover:text-green-300 transition-colors">
+                        <i class="fab fa-discord text-xl"></i>
+                    </a>
+                    <a href="https://github.com/FloppaLand" class="text-gray-400 hover:text-green-300 transition-colors">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+  </body>
+</html>
