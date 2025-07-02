@@ -13,10 +13,9 @@ import requests
 @app.route('/')
 @app.route('/index')
 def index():
-  with open(safe_join(app.config['DATA_DIR'], 'mc-servers.json'), encoding='utf-8') as f:
-    metadatas = json.load(f)
+  LAUNCHER_URL = "https://fllauncher.zizazr.art"
   
-  return render_template('index.html', metadatas=metadatas)
+  return render_template('index.html', launcher_url=LAUNCHER_URL)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

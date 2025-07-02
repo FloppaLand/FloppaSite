@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "macros.html" import footer %}
 {% block content %}
     <div class="mainflex">
       <div class="main1">
@@ -10,13 +11,13 @@
           <a><a class="main1_actcent">технический</a> и <a class="main1_actcent2">магический</a> Minecraft сервер.</a>
         </div>
         <div class="main1_download_div">
-          <a class="main1_download" href="https://fllauncher.zizazr.art//FloppaLauncher.exe" >
+          <a class="main1_download" href="{{launcher_url}}/FloppaLauncher.exe" >
             <svg class="main1_download_icon" fill="#FFFFFF" width="45px" height="45px" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
               <path d="M1863.53 1016.437c31.171 0 56.47 25.299 56.47 56.47v790.589c0 16.376-7.115 31.849-19.313 42.465-10.39 9.149-23.605 14.005-37.158 14.005-2.484 0-5.082-.113-7.567-.452l-903.53-123.331c-28.008-3.84-48.903-27.784-48.903-56.02v-667.256c0-31.171 25.3-56.47 56.471-56.47Zm-1129.412 0c31.171 0 56.47 25.299 56.47 56.47v634.504c0 16.376-7.115 31.85-19.426 42.579-10.39 9.035-23.491 13.891-37.044 13.891-2.485 0-5.196-.113-7.68-.564L48.79 1669.35C20.78 1665.51 0 1641.68 0 1613.444v-540.537c0-31.171 25.299-56.47 56.47-56.47Zm-7.726-859.855c16.151-2.372 32.415 2.597 44.725 13.327 12.424 10.73 19.426 26.315 19.426 42.579V846.99c0 31.285-25.186 56.47-56.47 56.47H56.424c-31.171 0-56.47-25.185-56.47-56.47V306.455c0-28.123 20.781-52.066 48.79-55.906ZM1855.974.474c16.15-2.033 32.414 2.71 44.724 13.44 12.198 10.73 19.313 26.203 19.313 42.466v790.588c0 31.285-25.299 56.471-56.47 56.471H960.01c-31.171 0-56.47-25.186-56.47-56.47V179.711c0-28.235 20.78-52.066 48.903-55.906Z" fill-rule="evenodd"/>
             </svg>
             <span class="main1_download_text1">Скачать Лаунчер</span>
           </a>
-          <a href="https://fllauncher.zizazr.art//FloppaLauncher.jar" class="main1_download_jar">
+          <a href="{{launcher_url}}/FloppaLauncher.jar" class="main1_download_jar">
             jar (linux, mac os ...)
           </a>
         </div>
@@ -62,103 +63,58 @@
       </div>
 
       <section id="status" class="py-8 bg-darker w-full">
-        <div class="max-w-6xl mx-auto">
+        <div class="max-w-6xl mx-auto ">
             <div class="text-center mb-12">
                 <h2 class="text-3xl md:text-5xl font-bold text-center mb-4">Статус Серверов</h2>
                 <p class="text-gray-300 max-w-2xl mx-auto">Реальное время работы и статистика наших серверов</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Main Server -->
-                <div class="bg-dark rounded-xl p-6">
-                    <h3 class="font-bold text-lg flex items-center gap-2 mb-4">
-                        <i class="fas fa-server"></i> Основной
-                    </h3>
-                    <div class="mb-4 flex items-center gap-3">
-                        <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                        <span class="font-mono">Онлайн</span>
-                    </div>
-                    <div>
-                        <div class="flex justify-between text-sm mb-1">
-                            <span>Игроки</span>
-                            <span>24/100</span>
-                        </div>
-                        <div class="w-full bg-gray-700 rounded-full h-2">
-                            <div class="bg-green-500 h-2 rounded-full" style="width: 24%"></div>
-                        </div>
-                    </div>
-                    <div class="mt-4 text-sm">
-                        <div class="flex justify-between mb-1">
-                            <span>TPS</span>
-                            <span>19.8</span>
-                        </div>
-                        <div class="flex justify-between mb-1">
-                            <span>RAM</span>
-                            <span>12/32GB</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Creative Server -->
-                <div class="bg-dark rounded-xl p-6">
-                    <h3 class="font-bold text-lg flex items-center gap-2 mb-4">
-                        <i class="fa-solid fa-biohazard"></i> Зомби выживание
-                    </h3>
-                    <div class="mb-4 flex items-center gap-3">
-                        <div class="w-3 h-3 bg-yellow-500 rounded-full animate-pulse"></div>
-                        <span class="font-mono">Нестабильно</span>
-                    </div>
-                    <div>
-                        <div class="flex justify-between text-sm mb-1">
-                            <span>Игроки</span>
-                            <span>8/30</span>
-                        </div>
-                        <div class="w-full bg-gray-700 rounded-full h-2">
-                            <div class="bg-yellow-500 h-2 rounded-full" style="width: 26%"></div>
-                        </div>
-                    </div>
-                    <div class="mt-4 text-sm">
-                        <div class="flex justify-between mb-1">
-                            <span>TPS</span>
-                            <span>17.2</span>
-                        </div>
-                        <div class="flex justify-between mb-1">
-                            <span>RAM</span>
-                            <span>6/16GB</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Test Server -->
-                <div class="bg-dark rounded-xl p-6">
-                    <h3 class="font-bold text-lg flex items-center gap-2 mb-4">
-                        <i class="fas fa-flask"></i> Тестовый
-                    </h3>
-                    <div class="mb-4 flex items-center gap-3">
-                        <div class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-                        <span class="font-mono">Оффлайн</span>
-                    </div>
-                    <div>
-                        <div class="flex justify-between text-sm mb-1">
-                            <span>Игроки</span>
-                            <span>0/20</span>
-                        </div>
-                        <div class="w-full bg-gray-700 rounded-full h-2">
-                            <div class="bg-red-500 h-2 rounded-full" style="width: 0%"></div>
-                        </div>
-                    </div>
-                    <div class="mt-4 text-sm">
-                        <div class="flex justify-between mb-1">
-                            <span>TPS</span>
-                            <span>-</span>
-                        </div>
-                        <div class="flex justify-between mb-1">
-                            <span>RAM</span>
-                            <span>0/8GB</span>
-                        </div>
-                    </div>
-                </div>
+            <div id="servers_root" class="grid grid-cols-[repeat(auto-fit,_minmax(300px,_1fr))] gap-6">
             </div>
+
+            <script>
+              //setInterval(updateServerStatus, 10000)
+              updateServerStatus()
+              function updateServerStatus() {
+              $.getJSON("{{ url_for('server_status') }}", function(data) {
+                console.log(data)
+                var root = $("#servers_root")
+                  data["servers"].forEach(function(server) {
+                    root.append(`
+                    <div class="bg-dark rounded-xl p-6">
+                      <h3 class="font-bold text-lg flex items-center gap-2 mb-4">
+                          <i class="${server['fa-icon']}"></i> ${server["name"]}
+                      </h3>
+                      <p class="text-gray-400 max-w-2xl pb-4">${server['description']}</p>
+                      <div class="mb-4 flex items-center gap-3">
+                          <div class="w-3 h-3 ${server['online'] ? "bg-green-500" : "bg-red-500"} rounded-full animate-pulse"></div>
+                          <span class="font-mono">${server['online'] ? "Онлайн" : "Оффлайн"}</span>
+                      </div>
+                      <div>
+                          <div class="flex justify-between text-sm mb-1">
+                              <span>Игроки</span>
+                              <span>${server['online_players']}/${server['max_players']}</span>
+                          </div>
+                          <div class="w-full bg-gray-700 rounded-full h-2">
+                              <div class="bg-green-500 h-2 rounded-full" style="width: ${(server['online_players'] / server['max_players'])*100}%"></div>
+                          </div>
+                      </div>
+                      <div class="mt-4 text-sm">
+                          <div class="flex justify-between mb-1">
+                              <span>TPS</span>
+                              <span>17.2</span>
+                          </div>
+                          <div class="flex justify-between mb-1">
+                              <span>RAM</span>
+                              <span>6/16GB</span>
+                          </div>
+                      </div>
+                    </div>
+                    `)
+                  })
+              });
+            }
+            </script>
             
             <div class="mt-8 text-center text-gray-400 text-sm">
                 <p>Данные обновляются каждые 2 минуты. Последнее обновление: 2 сек назад</p>
@@ -280,10 +236,10 @@
                             <h3 class="text-xl font-bold text-secondary mb-2">Скачайте лаунчер</h3>
                             <p class="text-gray-300 mb-4">Выберите версию для вашей операционной системы</p>
                             <div class="flex space-x-4">
-                                <a href="http://launcher.floppaland.fun/FloppaLauncher.exe" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg font-medium flex items-center">
+                                <a href="{{launcher_url}}/FloppaLauncher.exe" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg font-medium flex items-center">
                                     <i class="fab fa-windows mr-2"></i> Windows
                                 </a>
-                                <a href="http://launcher.floppaland.fun/FloppaLauncher.jar" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg font-medium flex items-center">
+                                <a href="{{launcher_url}}/FloppaLauncher.jar" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg font-medium flex items-center">
                                     <i class="fab fa-linux mr-2"></i> Linux/MacOS
                                 </a>
                             </div>
@@ -308,4 +264,5 @@
             </div>
     </section>
     </div>
+    {{ footer() }}
 {% endblock %}

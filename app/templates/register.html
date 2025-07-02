@@ -109,26 +109,34 @@
         flex: 0 0 auto;
     }
     </style>
-    <div class="main">
-        <div class="box">
-          <h1 class="title">Регистрация</h1>
-          {{ success_macro(message) }}
-            <form action="" method="post">
-                {{ form.hidden_tag() }}
-                <p class="input_box">
-                    {{ form.username(class="input", placeholder="Никнейм") }}<br>
+  <main class="container m-auto px-4">
+        <div class="max-w-md mx-auto card-glass p-8 shadow-2xl bg-darker rounded-xl">
+            <div class="text-center mb-8">
+                <img src="{{ url_for('static', filename='logo/FloppaLandLogo.png') }}" alt="FloppaLand Logo" class="h-10 mx-auto animate-floating">
+            </div>
+            
+            <form class="space-y-4"  action="" method="post" novalidate>
+                <h2 class="text-3xl font-bold text-center">Регистрация</h2>
+                {{ success_macro(message) }}
+                <div>
+                    <label for="username" class="block text-sm font-medium mb-1">Имя пользователя</label>
+                    {{ form.username(class="w-full px-4 py-3 rounded-lg bg-zinc-800 border border-zinc-700 focus:border-green-800 focus:outline-none transition-colors", placeholder="Никнейм") }}
                     {{ error_macro(form.username.errors) }}
-                </p >
-                <p class="input_box">
-                    {{ form.password(class="input", placeholder="Ваш пароль") }}<br>
+                </div>
+                
+                <div>
+                    <label for="password" class="block text-sm font-medium mb-1">Пароль</label>
+                    {{ form.password(class="w-full px-4 py-3 rounded-lg bg-zinc-800 border border-zinc-700 focus:border-green-800 focus:outline-none transition-colors", placeholder="Ваш пароль") }}
                     {{ error_macro(form.password.errors) }}
-                </p>
-                <p class="input_box">
-                    {{ form.password2(class="input", placeholder="Повторите пароль") }}<br>
+                </div>
+                <div>
+                    {{ form.password2(class="w-full px-4 py-3 rounded-lg bg-zinc-800 border border-zinc-700 focus:border-green-800 focus:outline-none transition-colors", placeholder="Повторите пароль") }}
                     {{ error_macro(form.password2.errors) }}
-                </p>
-                <p>{{ form.submit(class="button_submit") }}</p>
+                </div>
+                
+                {{ form.hidden_tag() }}
+                {{ form.submit(class="w-full btn-primary bg-primary text-white py-3 px-4 rounded-lg font-medium transition-all duration-200 hover:shadow-lg") }}
             </form>
         </div>
-    </div>
+    </main>
 {% endblock %}

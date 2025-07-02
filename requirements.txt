@@ -9,3 +9,5 @@ MinePI
 requests
 psycopg2
 mcstatus
+gunicorn
+mcipc

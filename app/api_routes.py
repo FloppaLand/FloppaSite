@@ -1,4 +1,7 @@
+import asyncio
 from flask import render_template, flash, redirect, url_for, request, send_file, send_from_directory, make_response
+from mcstatus import JavaServer
+from mcipc.query import Client
 from app.utils import calculate_file_hash, get_skin_patch, render_body, update_hash
 from werkzeug.utils import secure_filename, safe_join
 from PIL import Image
@@ -63,3 +66,60 @@ def random_floppa():
   rand_floppa = random.choice(os.listdir(app.config["FLOPPA_DIR"]))
   return send_from_directory(app.config["FLOPPA_DIR"], rand_floppa)
 
+
+async def ping_server(ip: str) -> None:
+    try:
+        status = await (await JavaServer.async_lookup(ip)).async_status()
+    except Exception:
+        return
+
+    print(f"{ip} - {status.latency}ms") 
+
+async def ping_ips(ips: list[str]) -> None:
+    to_process: list[str] = []
+
+    for ip in ips:
+        if len(to_process) <= 10:  # 10 means here how many servers will be pinged at once
+            to_process.append(ip)
+            continue
+
+        await asyncio.wait({asyncio.create_task(ping_server(ip_to_ping)) for ip_to_ping in to_process})
+        to_process = []
+
+@app.route('/api/server_status')
+def server_status():
+  with open(os.path.join(app.config['DATA_DIR'], 'mc-servers.json'), encoding='utf-8') as f:
+    servers_data = json.load(f)
+
+  servers = []
+  for server_data in servers_data:
+    server = JavaServer.lookup(server_data['ping_ip'])
+    status = server.status()
+    if status:
+       servers.append({
+        "online": True,
+        "name": server_data['name'],
+        "description": server_data['description'],
+        "fa-icon": server_data['fa-icon'],
+        "ip": server_data['ping_ip'],
+        "version": server_data['version'],
+        "modloader": server_data['modloader'],
+        "online_players": status.players.online,
+        "max_players": status.players.max,
+        "latency": status.latency,
+        "server_version": status.version.name
+      })
+    else:
+      servers.append({
+       "online": False,
+       "name": server_data['name'],
+       "description": server_data['description'],
+       "fa-icon": server_data['fa-icon'],
+       "ip": server_data['ping_ip'],
+       "version": server_data['version'],
+       "modloader": server_data['modloader'],
+       })
+    
+  return {
+     "servers": servers
+  }
