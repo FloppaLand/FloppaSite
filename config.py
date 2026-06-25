@@ -10,4 +10,3 @@ class Config:
   UPLOADED_SKINS_DIR =      os.environ.get('SKIN_DIR')      or os.path.join(DATA_DIR, 'skins/')
   ARCHIVE_FILES_DIR =       os.environ.get('ARCHIVE_FILES_DIR') or os.path.join(DATA_DIR, 'archive/')
   BODY_RENDERS_DIR =        os.environ.get('BODY_RENDERS_DIR')  or os.path.join(DATA_DIR, 'renders/')
-  FLOPPA_DIR =              os.environ.get('FLOPPA_DIR')     or os.path.join(DATA_DIR, 'floppa/')

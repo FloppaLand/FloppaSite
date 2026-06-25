@@ -1,11 +1,13 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, FileField
-from wtforms.validators import ValidationError, DataRequired, EqualTo, Regexp
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, FileField, SelectField, TextAreaField, IntegerField
+from wtforms.validators import ValidationError, DataRequired, EqualTo, Regexp, Optional
 from flask_wtf.file import FileRequired, FileAllowed
 import sqlalchemy as sa
 from app import db
-from app.models import User
+from app.models import User, Server, Archive
+from app.utils import UserRole
 from PIL import Image
+import re
 
 class LoginForm(FlaskForm):
   username = StringField('Ник', validators=[DataRequired("Это поле обязательное!")])
@@ -51,4 +53,61 @@ class ChangePasswordForm(FlaskForm):
   password = PasswordField('Password', validators=[DataRequired("Это поле обязательное!")])
   password2 = PasswordField('Repeat Password', validators=[DataRequired("Это поле обязательное!"), EqualTo('password', "Пароли дожны совпадать!")])
   submit2 = SubmitField('Изменить пароль')
+
+
+# Admin Panel Forms
+
+class ServerForm(FlaskForm):
+    name = StringField('Название сервера', validators=[DataRequired("Название обязательно!")])
+    ip = StringField('IP адрес', validators=[DataRequired("IP адрес обязателен!")])
+    version = StringField('Версия', validators=[DataRequired("Версия обязательна!")])
+    modloader = StringField('Загузчик', validators=[DataRequired("Выберете загрузчик!")])
+    desc = StringField('Описание')
+
+    submit = SubmitField('Сохранить сервер')
+
+    def validate_ip(self, ip):
+        # Allow IP:port or just IP format
+        ip_pattern = r'^(\d{1,3}\.){3}\d{1,3}(:\d+)?$'
+        if not re.match(ip_pattern, ip.data):
+            raise ValidationError('Неверный формат IP адреса! Используйте формат: 192.168.1.1 или 192.168.1.1:25565')
+        
+        # Validate octets
+        parts = ip.data.split(':')
+        octets = parts[0].split('.')
+        for octet in octets:
+            try:
+                val = int(octet)
+                if val < 0 or val > 255:
+                    raise ValidationError('IP адрес содержит недопустимые значения (0-255)!')
+            except ValueError:
+                raise ValidationError('Неверный формат IP адреса!')
+
+    def validate_name(self, name):
+        server = db.session.scalar(sa.select(Server).where(Server.name == name.data))
+        if server is not None:
+            raise ValidationError('Сервер с таким названием уже существует!')
+
+
+class ArchiveForm(FlaskForm):
+    name = StringField('Название архива', validators=[DataRequired("Название обязательно!")])
+    version = StringField('Версия', validators=[Optional()])
+    modloader = StringField('Модloader', validators=[Optional()])
+    description = TextAreaField('Описание', validators=[Optional()])
+    submit = SubmitField('Сохранить архив')
+
+    def validate_name(self, name):
+        archive = db.session.scalar(sa.select(Archive).where(Archive.name == name.data))
+        if archive is not None:
+            raise ValidationError('Архив с таким названием уже существует!')
+
+
+class UserEditForm(FlaskForm):
+    username = StringField('Ник', render_kw={'readonly': True})
+    role = SelectField('Роль', choices=[
+        ('user', 'Пользователь'),
+        ('mod', 'Модератор'),
+        ('admin', 'Администратор')
+    ])
+    submit = SubmitField('Обновить роль')
 

@@ -11,3 +11,4 @@ psycopg2
 mcstatus
 gunicorn
 mcipc
+bcrypt

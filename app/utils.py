@@ -6,6 +6,8 @@ from minepi import Skin
 import asyncio
 from hashlib import sha256
 import json
+import enum
+
 def get_skin_patch(filename):
    filename = filename + ("" if filename.lower().endswith(".png") else ".png") # проверка на .png
    
@@ -53,3 +55,10 @@ def update_hash(caches, username, skin_hash):
    with open(os.path.join(app.config['DATA_DIR'], 'render-cache.json'), 'w', encoding='utf-8') as f:
       json.dump(caches, f)
    return caches[username]
+
+
+# enum for roles
+class UserRole(enum.Enum):
+    USER = "user"
+    ADMIN = "admin"
+    MOD = "mod"

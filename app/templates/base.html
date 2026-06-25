@@ -82,24 +82,6 @@
             }
         }
     </style>
-
-    <!-- Yandex.Metrika counter -->
-    <script type="text/javascript" >
-      (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-      m[i].l=1*new Date();
-      for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-      k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-      (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-
-      ym(98503815, "init", {
-          clickmap:true,
-          trackLinks:true,
-          accurateTrackBounce:true,
-          webvisor:true
-      });
-    </script>
-    <noscript><div><img src="https://mc.yandex.ru/watch/98503815" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-    <!-- /Yandex.Metrika counter -->
 </head>
 <body>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -112,6 +94,11 @@
       {% endif %}
       <a href="https://discord.com/invite/uHJxq9Yzgw" class="desktop_navbar_link">Discord</a>
       <a href="{{ url_for('archive') }}" class="desktop_navbar_link">Архив</a>
+      {% if not current_user.is_anonymous and current_user.role.value == 'admin' %}
+      <a href="{{ url_for('admin') }}" class="desktop_navbar_link" style="color: #ff6b6b;">
+        <i class="fas fa-shield-alt"></i> Админ
+      </a>
+      {% endif %}
       
       <div class="desktop_navbar_right">
           {% if current_user.is_anonymous %}
@@ -140,6 +127,11 @@
           {% endif %}
           
           <a class="mobile_navbar_link" onclick="mobile_navbar_link_hider()" href="{{ url_for('archive') }}">Архив</a>
+          {% if not current_user.is_anonymous and current_user.role.value == 'admin' %}
+          <a class="mobile_navbar_link" onclick="mobile_navbar_link_hider()" href="{{ url_for('admin') }}" style="color: #ff6b6b;">
+            <i class="fas fa-shield-alt"></i> Админ
+          </a>
+          {% endif %}
           <a class="mobile_navbar_link" onclick="mobile_navbar_link_hider()" href="https://discord.com/invite/uHJxq9Yzgw"><i class="fa-brands fa-discord"></i> Discord</a>
         </div>
         <div class="icon" onclick="mobile_navbar_link_hider()">

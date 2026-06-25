@@ -29,7 +29,6 @@ const SkinForm = document.getElementById("SkinForm")
 
 SkinForm.onsubmit = function ()
 { 
-  captchaContainer.style.display = "block"
   return false
 }
 
@@ -84,10 +83,8 @@ function showSuccess() {
 
     // Pause the game
     Module.pauseMainLoop();
-
     // Hide the captcha container completely
     captchaContainer.style.display = "none";
-
 
     SkinForm.submit();
 
@@ -181,7 +178,6 @@ var Module = {
 
             // Store the original lookupKeyCodeForEvent function
             const originalLookupKeyCodeForEvent = SDL.lookupKeyCodeForEvent;
-
             // Create a wrapper that modifies key behavior
             SDL.lookupKeyCodeForEvent = function (event) {
                 // Ignore Escape key by returning 0

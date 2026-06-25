@@ -5,15 +5,16 @@ import os
 import json
 from urllib.parse import urlsplit, urljoin
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, SetSkinForm, ChangePasswordForm
-from app.models import User
+from app.forms import LoginForm, RegistrationForm, SetSkinForm, ChangePasswordForm, ServerForm, ArchiveForm, UserEditForm
+from app.models import Archive, ArchiveFile, User, Server
+from app.utils import UserRole
 from werkzeug.utils import secure_filename, safe_join
 import requests
 
 @app.route('/')
 @app.route('/index')
 def index():
-  LAUNCHER_URL = "https://fllauncher.zizazr.art"
+  LAUNCHER_URL = "https://launcher.fl.2bd.net"
   
   return render_template('index.html', launcher_url=LAUNCHER_URL)
 
@@ -98,19 +99,16 @@ def profile():
 @app.route('/archive')
 def archive():
   filename = request.args.get('filename', type=str)
-  with open(os.path.join(app.config['DATA_DIR'], 'archive-data.json'), encoding='utf-8') as f:
-    data = json.load(f)
-  
+  data = db.session.execute(sa.select(Archive)).scalars().all()
   if filename is None: 
     return render_template('archive.html', contents=data)
-  else:
-     filename = secure_filename(filename)
-     return send_from_directory(app.config["ARCHIVE_FILES_DIR"], filename)
 
-
-@app.errorhandler(404)
-def handle_404_error(error):
-    return render_template('notfound.html'), 404
+@app.route("/archive/<int:file_id>")
+def archive_by_id(file_id):
+  file = db.session.get(ArchiveFile, file_id)
+  if file is None:
+    return 404
+  return send_from_directory(app.config["ARCHIVE_FILES_DIR"], file.name, as_attachment=True)
 
 @app.route("/sitemap")
 @app.route("/sitemap.xml")
@@ -139,3 +137,235 @@ def robots():
 
   return response
 
+
+def admin_required(f):
+    """Decorator to check if user is admin"""
+    from functools import wraps
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated or current_user.role != UserRole.ADMIN:
+            flash('У вас нет доступа к админ-панели!', category='error')
+            return redirect(url_for('index'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+
+@app.route('/admin')
+@login_required
+@admin_required
+def admin():
+    tab = request.args.get('tab', 'users', type=str)
+    
+    # Get all data
+    users = db.session.execute(sa.select(User)).scalars().all()
+    servers = db.session.execute(sa.select(Server)).scalars().all()
+    archives = db.session.execute(sa.select(Archive)).scalars().all()
+    
+    return render_template('admin.html', 
+                         tab=tab,
+                         users=users,
+                         servers=servers,
+                         archives=archives)
+
+
+@app.route('/admin/server/add', methods=['POST'])
+@login_required
+@admin_required
+def admin_add_server():
+    form = ServerForm()
+    if form.validate_on_submit():
+        # Check for duplicate IP
+        existing_ip = db.session.scalar(sa.select(Server).where(Server.ip == form.ip.data))
+        if existing_ip is not None:
+            flash('Сервер с таким IP адресом уже существует!', category='error')
+            return redirect(url_for('admin', tab='servers'))
+        
+        server = Server(name=form.name.data, ip=form.ip.data, version=form.version.data, modloader=form.modloader.data, desc=form.desc.data)
+        db.session.add(server)
+        db.session.commit()
+        flash(f'Сервер "{form.name.data}" добавлен!', category='success')
+        app.logger.info(f"[{current_user.username}] Добавлен новый сервер: {form.name.data}")
+    else:
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash(f'{field}: {error}', category='error')
+    return redirect(url_for('admin', tab='servers'))
+
+
+@app.route('/admin/server/<int:server_id>/edit', methods=['POST'])
+@login_required
+@admin_required
+def admin_edit_server(server_id):
+    server = db.session.get(Server, server_id)
+    if server is None:
+        flash('Сервер не найден!', category='error')
+        return redirect(url_for('admin', tab='servers'))
+    
+    form = ServerForm()
+    if form.validate_on_submit():
+        # Check if name already exists (but not the current server's name)
+        if form.name.data != server.name:
+            existing = db.session.scalar(sa.select(Server).where(Server.name == form.name.data))
+            if existing is not None:
+                flash('Сервер с таким названием уже существует!', category='error')
+                return redirect(url_for('admin', tab='servers'))
+        
+        # Check if IP already exists (but not the current server's IP)
+        if form.ip.data != server.ip:
+            existing_ip = db.session.scalar(sa.select(Server).where(Server.ip == form.ip.data))
+            if existing_ip is not None:
+                flash('Сервер с таким IP адресом уже существует!', category='error')
+                return redirect(url_for('admin', tab='servers'))
+        
+        server.name = form.name.data
+        server.ip = form.ip.data
+        db.session.commit()
+        flash(f'Сервер "{form.name.data}" обновлён!', category='success')
+        app.logger.info(f"[{current_user.username}] Сервер обновлен: {form.name.data}")
+    else:
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash(f'{field}: {error}', category='error')
+    return redirect(url_for('admin', tab='servers'))
+
+
+@app.route('/admin/server/<int:server_id>/delete', methods=['POST'])
+@login_required
+@admin_required
+def admin_delete_server(server_id):
+    """Delete server"""
+    server = db.session.get(Server, server_id)
+    if server is None:
+        flash('Сервер не найден!', category='error')
+        return redirect(url_for('admin', tab='servers'))
+    
+    server_name = server.name
+    db.session.delete(server)
+    db.session.commit()
+    flash(f'Сервер "{server_name}" удалён!', category='success')
+    app.logger.info(f"[{current_user.username}] Сервер удален: {server_name}")
+    return redirect(url_for('admin', tab='servers'))
+
+
+@app.route('/admin/archive/add', methods=['POST'])
+@login_required
+@admin_required
+def admin_add_archive():
+    """Add new archive"""
+    form = ArchiveForm()
+    if form.validate_on_submit():
+        archive = Archive(
+            name=form.name.data,
+            version=form.version.data or None,
+            modloader=form.modloader.data or None,
+            description=form.description.data or None
+        )
+        db.session.add(archive)
+        db.session.commit()
+        flash(f'Архив "{form.name.data}" добавлен!', category='success')
+        app.logger.info(f"[{current_user.username}] Добавлен новый архив: {form.name.data}")
+    else:
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash(f'{field}: {error}', category='error')
+    return redirect(url_for('admin', tab='archives'))
+
+
+@app.route('/admin/archive/<int:archive_id>/edit', methods=['POST'])
+@login_required
+@admin_required
+def admin_edit_archive(archive_id):
+    """Edit archive"""
+    archive = db.session.get(Archive, archive_id)
+    if archive is None:
+        flash('Архив не найден!', category='error')
+        return redirect(url_for('admin', tab='archives'))
+    
+    form = ArchiveForm()
+    if form.validate_on_submit():
+        # Check if name already exists (but not the current archive's name)
+        if form.name.data != archive.name:
+            existing = db.session.scalar(sa.select(Archive).where(Archive.name == form.name.data))
+            if existing is not None:
+                flash('Архив с таким названием уже существует!', category='error')
+                return redirect(url_for('admin', tab='archives'))
+        
+        archive.name = form.name.data
+        archive.version = form.version.data or None
+        archive.modloader = form.modloader.data or None
+        archive.description = form.description.data or None
+        db.session.commit()
+        flash(f'Архив "{form.name.data}" обновлён!', category='success')
+        app.logger.info(f"[{current_user.username}] Архив обновлен: {form.name.data}")
+    else:
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash(f'{field}: {error}', category='error')
+    return redirect(url_for('admin', tab='archives'))
+
+
+@app.route('/admin/archive/<int:archive_id>/delete', methods=['POST'])
+@login_required
+@admin_required
+def admin_delete_archive(archive_id):
+    """Delete archive"""
+    archive = db.session.get(Archive, archive_id)
+    if archive is None:
+        flash('Архив не найден!', category='error')
+        return redirect(url_for('admin', tab='archives'))
+    
+    archive_name = archive.name
+    db.session.delete(archive)
+    db.session.commit()
+    flash(f'Архив "{archive_name}" удалён!', category='success')
+    app.logger.info(f"[{current_user.username}] Архив удален: {archive_name}")
+    return redirect(url_for('admin', tab='archives'))
+
+
+@app.route('/admin/user/<int:user_id>/role', methods=['POST'])
+@login_required
+@admin_required
+def admin_change_user_role(user_id):
+    """Change user role"""
+    user = db.session.get(User, user_id)
+    if user is None:
+        flash('Пользователь не найден!', category='error')
+        return redirect(url_for('admin', tab='users'))
+    
+    if user.id == current_user.id:
+        flash('Вы не можете изменить собственную роль!', category='error')
+        return redirect(url_for('admin', tab='users'))
+    
+    role_str = request.form.get('role')
+    try:
+        new_role = UserRole(role_str)
+        user.role = new_role
+        db.session.commit()
+        flash(f'Роль пользователя "{user.username}" изменена на "{new_role.value}"!', category='success')
+        app.logger.info(f"[{current_user.username}] Роль пользователя {user.username} изменена на {new_role.value}")
+    except (ValueError, KeyError):
+        flash('Неверная роль!', category='error')
+    
+    return redirect(url_for('admin', tab='users'))
+
+
+@app.route('/admin/user/<int:user_id>/delete', methods=['POST'])
+@login_required
+@admin_required
+def admin_delete_user(user_id):
+    """Delete user"""
+    user = db.session.get(User, user_id)
+    if user is None:
+        flash('Пользователь не найден!', category='error')
+        return redirect(url_for('admin', tab='users'))
+    
+    if user.id == current_user.id:
+        flash('Вы не можете удалить свой аккаунт!', category='error')
+        return redirect(url_for('admin', tab='users'))
+    
+    username = user.username
+    db.session.delete(user)
+    db.session.commit()
+    flash(f'Пользователь "{username}" удалён!', category='success')
+    app.logger.info(f"[{current_user.username}] Пользователь удален: {username}")
+    return redirect(url_for('admin', tab='users'))

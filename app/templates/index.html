@@ -7,22 +7,29 @@
           <img class="main1_logo" src="{{ url_for('static', filename='logo/FloppaLandLogo.png') }}" alt="logo">
         </a>
         <div class="main1_description">
-          <a>Самый разнообразный <br></a>
-          <a><a class="main1_actcent">технический</a> и <a class="main1_actcent2">магический</a> Minecraft сервер.</a>
+          <a>Minecraft сервер c Create Aeronautics</a>
         </div>
-        <div class="main1_download_div">
-          <a class="main1_download" href="{{launcher_url}}/FloppaLauncher.exe" >
-            <svg class="main1_download_icon" fill="#FFFFFF" width="45px" height="45px" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
-              <path d="M1863.53 1016.437c31.171 0 56.47 25.299 56.47 56.47v790.589c0 16.376-7.115 31.849-19.313 42.465-10.39 9.149-23.605 14.005-37.158 14.005-2.484 0-5.082-.113-7.567-.452l-903.53-123.331c-28.008-3.84-48.903-27.784-48.903-56.02v-667.256c0-31.171 25.3-56.47 56.471-56.47Zm-1129.412 0c31.171 0 56.47 25.299 56.47 56.47v634.504c0 16.376-7.115 31.85-19.426 42.579-10.39 9.035-23.491 13.891-37.044 13.891-2.485 0-5.196-.113-7.68-.564L48.79 1669.35C20.78 1665.51 0 1641.68 0 1613.444v-540.537c0-31.171 25.299-56.47 56.47-56.47Zm-7.726-859.855c16.151-2.372 32.415 2.597 44.725 13.327 12.424 10.73 19.426 26.315 19.426 42.579V846.99c0 31.285-25.186 56.47-56.47 56.47H56.424c-31.171 0-56.47-25.185-56.47-56.47V306.455c0-28.123 20.781-52.066 48.79-55.906ZM1855.974.474c16.15-2.033 32.414 2.71 44.724 13.44 12.198 10.73 19.313 26.203 19.313 42.466v790.588c0 31.285-25.299 56.471-56.47 56.471H960.01c-31.171 0-56.47-25.186-56.47-56.47V179.711c0-28.235 20.78-52.066 48.903-55.906Z" fill-rule="evenodd"/>
-            </svg>
-            <span class="main1_download_text1">Скачать Лаунчер</span>
+        
+        <div class="flex flex-wrap justify-center items-center gap-4 mt-6">
+          <a href="{{launcher_url}}/FloppaLauncher.exe" class="px-6 py-3 bg-green-800 hover:bg-green-600 rounded-xl font-bold flex items-center gap-3 transition-colors text-white shadow-lg">
+            <i class="fab fa-windows text-2xl"></i>
+            <span class="text-lg">Windows</span>
           </a>
-          <a href="{{launcher_url}}/FloppaLauncher.jar" class="main1_download_jar">
-            jar (linux, mac os ...)
+          <a href="{{launcher_url}}/FloppaLauncher.jar" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-xl font-bold flex items-center gap-3 transition-colors text-white shadow-lg">
+            <div class="flex items-center gap-1 text-xl">
+              <i class="fab fa-apple"></i>
+              <i class="fab fa-linux"></i>
+            </div>
+            <span class="text-lg">Mac / Linux</span>
+          </a>
+          <a href="{{launcher_url}}/FloppaLauncher.AppImage" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-xl font-bold flex items-center gap-3 transition-colors text-white shadow-lg">
+            <i class="fab fa-steam text-2xl"></i>
+            <span class="text-lg">Steam Deck</span>
           </a>
         </div>
-        <a href="#more" class="scroll">
-          <img alt="downarrow" class="main1_downarrow" src="{{ url_for('static', filename='images/downarrow.png') }}">
+
+        <a href="#more" class="scroll mt-8 block">
+          <img alt="downarrow" class="main1_downarrow mx-auto" src="{{ url_for('static', filename='images/downarrow.png') }}">
         </a>
         <script>
           const scrollLinks = document.querySelectorAll('.scroll');
@@ -44,7 +51,7 @@
         <a class="headline"></a>
         <div class="main2_features_div">
           <div class="main2_feature low">
-            <img class="main2_feature_img_low" alt="Feature Image" src="/static/launcher.png">
+            <img class="main2_feature_img_low" alt="Feature Image" src="{{ url_for('static', filename='images/launcher.png') }}">
             <a class="main2_feature_headline">Свой лаунчер</a>
           </div>
           <div class="main2_feature low">
@@ -52,12 +59,12 @@
             <a class="main2_feature_headline">Голосовой чат</a>
           </div>
           <div class="main2_feature low">
-            <img class="main2_feature_img_low" alt="Feature Image" src="/static/items.png">
-            <a class="main2_feature_headline">Кастомные предметы</a>
+            <img class="main2_feature_img_low" alt="Feature Image" src="{{ url_for('static', filename='images/crafts.png') }}">
+            <a class="main2_feature_headline">Сбалансированные крафты</a>
           </div>
           <div class="main2_feature low">
-            <img class="main2_feature_img_low" alt="Feature Image" src="{{ url_for('random_floppa') }}">
-            <a class="main2_feature_headline">Шлёпа!</a>
+            <img class="main2_feature_img_low" alt="Feature Image" src="{{ url_for('static', filename='images/addons.png') }}">
+            <a class="main2_feature_headline">Различные аддоны</a>
           </div>
         </div>
       </div>
@@ -122,43 +129,6 @@
         </div>
     </section>
 
-      <div id="mods"></div>
-      <div class="main2">
-        <a class="headline">Основные моды</a>
-        <div class="main2_features_div">
-          <div class="main2_feature">
-            <img class="main2_feature_img" alt="Feature Image" src="/static/create.jpg">
-            <a class="main2_feature_headline">Create</a>
-            <a class="main2_feature_text">Позволяет строить потрясающие механизмы, заводы, фермы на вращательной энергии</a>
-          </div>
-          <div class="main2_feature">
-            <img class="main2_feature_img" alt="Feature Image" src="media/placeholder.png">
-            <a class="main2_feature_headline">Immersive Enginering</a>
-            <a class="main2_feature_text"></a>
-          </div>
-          <div class="main2_feature">
-            <img class="main2_feature_img" alt="Feature Image" src="media/placeholder.png">
-            <a class="main2_feature_headline">Mekanism</a>
-            <a class="main2_feature_text">Один из главных технических модов на сервере. Джетпаки, генераторы, реакторы, x5 руды, и многе другое. </a>
-          </div>
-          <div class="main2_feature">
-            <img class="main2_feature_img" alt="Feature Image" src="/static/appliedenergistics.png">
-            <a class="main2_feature_headline">Applied Energistics 2</a>
-            <a class="main2_feature_text">Удобная система хранения ваших ресурсов, да ещё и с автокрафтом.</a>
-          </div>
-          <div class="main2_feature">
-            <img class="main2_feature_img" alt="Feature Image" src="/static/appliedenergistics.png">
-            <a class="main2_feature_headline">Refined Storage</a>
-            <a class="main2_feature_text">Похож на applied, но дешевле.</a>
-          </div>
-          <div class="main2_feature">
-            <img class="main2_feature_img" alt="Feature Image" src="/static/megumin.png">
-            <a class="main2_feature_headline">Mahou Tsukai</a>
-            <a class="main2_feature_text">Единственный мод на заклинания на этой сборке</a>
-          </div>
-        </div>
-      </div>
-      
       <section class="py-16 bg-darker w-full">
         <div class="container mx-auto px-4">
           <div class="max-w-3xl mx-auto justify-center">
@@ -209,7 +179,6 @@
             </div>
           </div>
         </div>
-        
       </section>
 
       <section class="py-16 bg-darker w-full">
@@ -225,22 +194,25 @@
                             <div class="absolute left-0 top-0 w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white text-lg font-bold">1</div>
                             <h3 class="text-xl font-bold text-secondary mb-2">Регистрация</h3>
                             <p class="text-gray-300 mb-4">Создайте аккаунт на нашем сервере</p>
-                            <a href="{{ url_for('register') }}" class="inline-block px-4 py-2 bg-green-700 hover:bg-green-600 rounded-lg font-medium">
+                            <a href="{{ url_for('register') }}" class="inline-block px-4 py-2 bg-green-700 hover:bg-green-600 rounded-lg font-medium transition-colors">
                                 <i class="fas fa-user-plus mr-2"></i> Зарегистрироваться
                             </a>
                         </div>
                         
-                        <!-- Step 2 -->
+                        <!-- Step 2 (Обновленные кнопки) -->
                         <div class="relative pl-16">
                             <div class="absolute left-0 top-0 w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white text-lg font-bold">2</div>
                             <h3 class="text-xl font-bold text-secondary mb-2">Скачайте лаунчер</h3>
                             <p class="text-gray-300 mb-4">Выберите версию для вашей операционной системы</p>
-                            <div class="flex space-x-4">
-                                <a href="{{launcher_url}}/FloppaLauncher.exe" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg font-medium flex items-center">
+                            <div class="flex flex-wrap gap-4">
+                                <a href="{{launcher_url}}/FloppaLauncher.exe" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg font-medium flex items-center transition-colors">
                                     <i class="fab fa-windows mr-2"></i> Windows
                                 </a>
-                                <a href="{{launcher_url}}/FloppaLauncher.jar" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg font-medium flex items-center">
-                                    <i class="fab fa-linux mr-2"></i> Linux/MacOS
+                                <a href="{{launcher_url}}/FloppaLauncher.jar" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg font-medium flex items-center transition-colors">
+                                    <i class="fab fa-apple mr-1"></i> <i class="fab fa-linux mr-2 ml-1"></i> Mac / Linux
+                                </a>
+                                <a href="{{launcher_url}}/FloppaLauncher.AppImage" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg font-medium flex items-center transition-colors">
+                                    <i class="fab fa-steam mr-2"></i> Steam Deck
                                 </a>
                             </div>
                         </div>
@@ -262,6 +234,7 @@
                     </div>
                 </div>
             </div>
+        </div>
     </section>
     </div>
     {{ footer() }}
